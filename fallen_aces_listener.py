@@ -66,7 +66,6 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
         function_definitions = get_function_definition(view)
 
         arg_name = function_definitions[function_name]["args"][arg_index]
-        print("FUNCTION", function_name, arg_name)
 
         level_info = get_level_info(view)
         if arg_name == "eventNumber":
