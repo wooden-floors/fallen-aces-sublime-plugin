@@ -84,9 +84,19 @@ def _parse_level_info(raw_level_info):
         if name and number:
             tags[number] = '{} - {}'.format(name, number)
     
+    things = {}
+    thing_blocks = re.findall(r'Thing\b[^\{]*\{(.*?)\}', raw_level_info, flags=re.DOTALL)
+    _log("Found {} things".format(len(thing_blocks)))
+    for block in thing_blocks:
+        definition_id = _extract_int(block, "definition_id")
+        tag = _extract_int(block, "tag")
+        if definition_id and tag:
+            things.setdefault(definition_id, []).append(tag)
+
     return {
         "events": events,
-        "tags": tags
+        "tags": tags,
+        "things": things
     }
 
 def _extract_string(block, field_name):

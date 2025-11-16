@@ -4,10 +4,17 @@ import os
 import re
 import html
 import json
-
+ 
 from .fallen_aces_level_info import get_level_info
 from .fallen_aces_function_definition import get_function_definition
 from .fallen_aces_cursor import get_cursor_position
+
+VARIABLE_NAME_TO_DEFINITION_ID = {
+    "lightStateTag": 517, # LightState
+    "lightSourceTag": 518, # PointLight
+    "movableGeometryTag": 534, # MovableGeometry
+    "moveStateTag": 521, # MoveState
+}
 
 class FallenAcesScriptEventListener(sublime_plugin.EventListener):
     def _should_apply(self, view):
@@ -68,10 +75,19 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
         arg_name = function_definitions[function_name]["args"][arg_index]
 
         level_info = get_level_info(view)
+
+        completions = []
         if arg_name == "eventNumber":
             completions = [(name, str(number)) for number, name in level_info["events"].items()]
-            return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+        elif arg_name in VARIABLE_NAME_TO_DEFINITION_ID:
+            definition_id = VARIABLE_NAME_TO_DEFINITION_ID[arg_name]
+            if definition_id in level_info["things"]:
+                tags = level_info["things"][definition_id]
+                completions = [(level_info["tags"][tag], str(tag)) for tag in tags]
         elif arg_name.lower().endswith("tag"):
             completions = [(name, str(number)) for number, name in level_info["tags"].items()]
+
+        if completions:
             return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+
         return None

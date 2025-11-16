@@ -1,3 +1,16 @@
+## SetLocalVariable(name, value)
+Sets a local variable that can be read from the same script.
+
+**How to use**
+```fallen
+SetLocalVariable("phone_is_ringing", 1);
+
+If(Equal("phone_is_ringing", 1))
+{
+    ...
+}
+```
+
 ## SetWorldVariable(name, value)
 Sets a world variable that can be read from other scripts.
 

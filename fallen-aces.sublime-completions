@@ -40,7 +40,7 @@
       },
       {
          "trigger":"IsBroken",
-         "contents":"IsBroken(${1:entityOrObject})"
+         "contents":"IsBroken(${1:entityTag})"
       },
       {
          "trigger":"IsUnderwater",
@@ -48,7 +48,7 @@
       },
       {
          "trigger":"SetState",
-         "contents":"SetState(${1:entityId}, ${2:state});"
+         "contents":"SetState(${1:entityTag}, ${2:state});"
       },
       {
          "trigger":"SetLightState",
@@ -57,7 +57,7 @@
       },
       {
          "trigger":"SetMoveState",
-         "contents":"SetMoveState(${1:movableGeometryTag}, ${2:moveState});"
+         "contents":"SetMoveState(${1:movableGeometryTag}, ${2:moveStateTag});"
       },
       {
          "trigger":"SetGodMode",

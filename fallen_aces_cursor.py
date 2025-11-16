@@ -5,6 +5,8 @@ import re
 import html
 import json
 
+DEBUG_ENABLED = False
+
 def _log(msg):
     if DEBUG_ENABLED:
         print("[CURSOR]: {}".format(msg))
@@ -12,7 +14,6 @@ def _log(msg):
 def get_cursor_position(view, point):
     global DEBUG_ENABLED 
     DEBUG_ENABLED = view.settings().get("fallen_aces_plugin_debug_enabled")
-
     line_region = view.line(point)
     line = view.substr(line_region)
 
