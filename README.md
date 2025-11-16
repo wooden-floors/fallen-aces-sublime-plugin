@@ -42,6 +42,6 @@ Provides:
 }
 
 ```
-- Open console (`'Ctrl' + '`'`)
+- Open console (`` Ctrl + ` ``)
 
 
