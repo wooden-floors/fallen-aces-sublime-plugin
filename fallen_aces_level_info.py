@@ -1,7 +1,7 @@
 import os
 import re
 
-LEVEL_INFO_CACHE = {}
+PROJECT_STRUCTURE_CACHE = {}
 DEBUG_ENABLED = False
 
 def _log(msg):
@@ -20,23 +20,35 @@ def get_level_info(view):
     if not project_file_name:
         return None
 
-    if project_file_name in LEVEL_INFO_CACHE:
-        _log("Get cached level info")
-        return LEVEL_INFO_CACHE[project_file_name]
+    if project_file_name not in PROJECT_STRUCTURE_CACHE:
+        _log("Project structure is not cached for {}".format(project_file_name))
+        PROJECT_STRUCTURE_CACHE[project_file_name] = _read_project_structure(project_file_name)
 
-    level_info = _read_level_info(project_file_name)
-    _log("Parsed data: {}".format(level_info))
-    
-    LEVEL_INFO_CACHE[project_file_name] = level_info
-    return level_info
+    chapter_info_path = PROJECT_STRUCTURE_CACHE[project_file_name]["chapterInfoPath"]
+    chapter_info_last_reload_time = PROJECT_STRUCTURE_CACHE[project_file_name]["chapterInfoLastReloadTime"]
 
-def _read_level_info(project_file_name):
-    _log("Reading level info")
+    chapter_info_last_modification_time = os.path.getmtime(chapter_info_path)
 
-    raw_level_info = _read_raw_level_info(project_file_name)
-    return _parse_level_info(raw_level_info)
+    if chapter_info_last_reload_time == None or chapter_info_last_reload_time < chapter_info_last_modification_time:
+        _log("Should reload level info path. chapterInfo.txt last reload - {}, last update - {}".format(chapter_info_last_reload_time, chapter_info_last_modification_time))
+        PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfoPath"] = _read_level_info_path(chapter_info_path)
+        PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfoLastReloadTime"] = None
+        PROJECT_STRUCTURE_CACHE[project_file_name]["chapterInfoLastReloadTime"] = chapter_info_last_modification_time
 
-def _read_raw_level_info(project_file_name):
+    level_info_path = PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfoPath"]
+    level_info_last_reload_time = PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfoLastReloadTime"]
+
+    level_info_last_modification_time = os.path.getmtime(level_info_path)
+    if level_info_last_reload_time == None or level_info_last_reload_time < level_info_last_modification_time:
+        _log("Should reload level info. levelInfo last reload - {}, last update - {}".format(level_info_last_reload_time, level_info_last_modification_time))
+        PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfo"] = _read_level_info(level_info_path)
+        PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfoLastReloadTime"] = level_info_last_modification_time
+
+    return PROJECT_STRUCTURE_CACHE[project_file_name]["levelInfo"]
+
+def _read_project_structure(project_file_name):
+    _log("Read project structure for file {}".format(project_file_name))
+
     folder = os.path.dirname(project_file_name)
     _log("Level folder: {}".format(folder))
 
@@ -45,23 +57,38 @@ def _read_raw_level_info(project_file_name):
         _log("File doesn't exist: {}".format(chapter_info_path))
         return None
 
-    world_file_name = None
+    return {
+        "chapterInfoPath": chapter_info_path,
+        "chapterInfoLastReloadTime": None
+    }
+
+def _read_level_info_path(chapter_info_path):
     with open(chapter_info_path, "r", encoding="utf-8") as f:
         for line in f:
             match = re.match(r'world_file_name\s*=\s*"(.*?)"', line.strip())
             if match:
-                world_file_name = match.group(1)
+                level_file_name = match.group(1)
                 break
-    if not world_file_name:
+
+    if not level_file_name:
         _log("Can't find world file name in chapterInfo.txt")
         return None
 
-    world_file_path = os.path.join(folder, world_file_name)
-    if not os.path.exists(world_file_path):
-        _log("File doesn't exist: {}".format(world_file_path))
+    folder = os.path.dirname(chapter_info_path)
+    level_file_path = os.path.join(folder, level_file_name)
+    if not os.path.exists(level_file_path):
+        _log("File doesn't exist: {}".format(level_file_path))
         return None
 
-    return open(world_file_path, "r", encoding="utf-8").read()
+    return level_file_path
+
+def _read_level_info(level_file_path):
+    _log("Reading level info")
+    raw_level_info = open(level_file_path, "r", encoding="utf-8").read()
+    level_info = _parse_level_info(raw_level_info)
+
+    _log("Parsed data: {}".format(level_info))
+    return level_info
 
 def _parse_level_info(raw_level_info):
     if not raw_level_info:
