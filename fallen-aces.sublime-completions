@@ -1,0 +1,406 @@
+{
+   "scope": "source.fallen-aces - string - comment",
+   "completions":[
+      // Entry point
+      {
+         "trigger":"main",
+         "contents":"Main(${1:args})\n{\n\t${2:body}\n}"
+      },
+
+      // Setting variables
+      {
+         "trigger":"SetLocalVariable",
+         "contents":"SetLocalVariable(${1:variableName}, ${2:value});"
+      },
+      {
+         "trigger":"SetWorldVariable",
+         "contents":"SetWorldVariable(${1:variableName}, ${2:value});"
+      },
+      {
+         "trigger":"SetProfileFlag",
+         "contents":"SetProfileFlag(${1:flagName}, ${2:value});"
+      },
+      {
+         "trigger":"GetProfileFlag",
+         "contents":"GetProfileFlag(${1:flagName}, ${2:outputVar});"
+      },
+
+      // State management
+      {
+         "trigger":"SetHitpoints",
+         "contents":"SetHitpoints(${1:entityTag}, ${2:hitpoints});"
+      },
+      {
+         "trigger":"GetHitpointsNormalised",
+         "contents":"GetHitpointsNormalised(${1:entity}, ${2:outputVariable});"
+      },
+      {
+         "trigger":"TakeDamage",
+         "contents":"TakeDamage(${1:entityTag}, ${2:damageAmount});"
+      },
+      {
+         "trigger":"IsBroken",
+         "contents":"IsBroken(${1:entityOrObject})"
+      },
+      {
+         "trigger":"IsUnderwater",
+         "contents":"IsUnderwater(${1:entityTag})"
+      },
+      {
+         "trigger":"SetState",
+         "contents":"SetState(${1:entityId}, ${2:state});"
+      },
+      {
+         "trigger":"SetLightState",
+         "contents":"SetLightState(${1:lightSourceTag}, ${2:lightStateTag});",
+         "details": "Usage example"
+      },
+      {
+         "trigger":"SetMoveState",
+         "contents":"SetMoveState(${1:movableGeometryTag}, ${2:moveState});"
+      },
+      {
+         "trigger":"SetGodMode",
+         "contents":"SetGodMode(${1:enabled});"
+      },
+      {
+         "trigger":"Neutralize",
+         "contents":"Neutralize(${1:targetTag}, ${2:immediate});"
+      },
+      {
+         "trigger":"MakeGatekeeper",
+         "contents":"MakeGatekeeper(${1:entityTag}, ${2:accessTag});"
+      },
+
+      // Inventory
+      {
+         "trigger":"GiveGadget",
+         "contents":"GiveGadget(${1:gadgetName});"
+      },
+      {
+         "trigger":"DropInventory",
+         "contents":"DropInventory(${1:entityTag}, ${2:itemTag})"
+      },
+      {
+         "trigger":"HasTaggedItem",
+         "contents":"HasTaggedItem(${1:entityTag}, ${2:itemTag});"
+      },
+      {
+         "trigger":"Give",
+         "contents":"Give(${1:itemName}, ${2:amount});"
+      },
+
+      // Objectives
+      {
+         "trigger":"GiveMap",
+         "contents":"GiveMap(${1:mapName}, ${2:levelName});"
+      },
+      {
+         "trigger":"AddObjective",
+         "contents":"AddObjective(${1:objectiveName});"
+      },
+      {
+         "trigger":"SetObjectivesPhoto",
+         "contents":"SetObjectivesPhoto(${1:photoName});"
+      },
+      {
+         "trigger":"FailObjective",
+         "contents":"FailObjective(\"${1:objectiveName}\");"
+      },
+      {
+         "trigger":"SetObjectiveMaxCount",
+         "contents":"SetObjectiveMaxCount(\"${1:objectiveName}\", ${2:maxCount});"
+      },
+      {
+         "trigger":"CompleteObjective",
+         "contents":"CompleteObjective(\"${1:objectiveName}\");"
+      },
+      {
+         "trigger":"FindSecret",
+         "contents":"FindSecret();"
+      },
+      {
+         "trigger":"EndLevel",
+         "contents":"EndLevel();"
+      },
+      {
+         "trigger":"GameOver",
+         "contents":"GameOver(\"${1:reason}\");"
+      },
+
+      // UI
+      {
+         "trigger":"ShowCollectedComicMessage",
+         "contents":"ShowCollectedComicMessage();"
+      },
+      {
+         "trigger":"ShowTutorial",
+         "contents":"ShowTutorial(${1:tutorialName});"
+      },
+      {
+         "trigger":"ShowNotification",
+         "contents":"ShowNotification(${1:message}, ${2:duration});"
+      },
+      {
+         "trigger":"ShowDebugMessage",
+         "contents":"ShowDebugMessage(\"${1:message}\");"
+      },
+      {
+         "trigger":"PutAwayRadioOnHUD",
+         "contents":"PutAwayRadioOnHUD();"
+      },
+
+      // Audio / Music
+      {
+         "trigger":"SetNormalMusicTrack",
+         "contents":"SetNormalMusicTrack(${1:trackId}, ${2:loop});"
+      },
+      {
+         "trigger":"SetStealthMusicTrack",
+         "contents":"SetStealthMusicTrack(${1:trackId});"
+      },
+      {
+         "trigger":"SetCombatMusicTrack",
+         "contents":"SetCombatMusicTrack(${1:trackId});"
+      },
+      {
+         "trigger":"PlayStinger",
+         "contents":"PlayStinger(${1:stingerName});"
+      },
+      {
+         "trigger":"StopStinger",
+         "contents":"StopStinger();"
+      },
+      {
+         "trigger":"SwitchChannel",
+         "contents":"SwitchChannel(${1:entityTag}, ${2:channelId});"
+      },
+
+      // Cutscenes
+      {
+         "trigger":"PlayMovie",
+         "contents":"PlayMovie(${1:movieName});"
+      },
+      {
+         "trigger":"OpenScreen",
+         "contents":"OpenScreen();"
+      },
+      {
+         "trigger":"ShowCutsceneBars",
+         "contents":"ShowCutsceneBars(${1:enabled});"
+      },
+      {
+         "trigger":"SetCutsceneModeForHands",
+         "contents":"SetCutsceneModeForHands(${1:enabled});"
+      },
+      {
+         "trigger":"Look",
+         "contents":"Look(${1:entityTag}, ${2:target});"
+      },
+      {
+         "trigger":"Move",
+         "contents":"Move(${1:entityTag}, ${2:destination});"
+      },
+      {
+         "trigger":"PlayCameraAnimation",
+         "contents":"PlayCameraAnimation(${1:animationName});"
+      },
+      {
+         "trigger":"FadeScreen",
+         "contents":"FadeScreen(${1:fadeIn}, ${2:duration});"
+      },
+      {
+         "trigger":"StopSkip",
+         "contents":"StopSkip();"
+      },
+      {
+         "trigger":"ShakeScreen",
+         "contents":"ShakeScreen(${1:intensity}, ${2:duration});"
+      },
+      {
+         "trigger":"SetChapterIntroText",
+         "contents":"SetChapterIntroText(\"${1:Chapter Title}\");"
+      },
+      {
+         "trigger":"SetNormalGameplayInput",
+         "contents":"SetNormalGameplayInput(${1:state});"
+      },
+      {
+         "trigger":"PlayGenericHandsAnimation",
+         "contents":"PlayGenericHandsAnimation(\"${1:animationName}\");"
+      },
+      {
+         "trigger":"SetCutsceneModeForHands",
+         "contents":"SetCutsceneModeForHands(${1:state});"
+      },
+      {
+         "trigger":"CutsceneCamera",
+         "contents":"CutsceneCamera(${1:startPos}, ${2:endPos}, ${3:unknown}, ${4:duration}, ${5:flag});"
+      },
+      {
+         "trigger":"CutsceneCamera2",
+         "contents":"CutsceneCamera2(${1:start}, ${2:look}, ${3:rotateSpeed}, ${4:heightSpeed}, ${5:endHeightOffset}, ${6:stopOnEvent}, ${7:skippable});"
+      },
+
+      // Event handling
+      {
+         "trigger":"TriggerEvent",
+         "contents":"TriggerEvent(${1:eventNumber});"
+      },
+      {
+         "trigger":"TriggerEventOnEvent",
+         "contents":"TriggerEventOnEvent(${1:eventNumber}, ${2:eventNumber});"
+      },
+      {
+         "trigger":"EventTriggered",
+         "contents":"EventTriggered(${1:eventNumber})"
+      },
+
+      // Conditional / Boolean
+      {
+         "trigger":"If",
+         "contents":"If(${1:condition})\n{\n\t${2:body}\n}"
+      },
+      {
+         "trigger":"Greater",
+         "contents":"Greater(${1:value1}, ${2:value2})"
+      },
+      {
+         "trigger":"Equal",
+         "contents":"Equal(${1:value1}, ${2:value2})"
+      },
+      {
+         "trigger":"Less",
+         "contents":"Less(${1:value1}, ${2:value2})"
+      },
+      {
+         "trigger":"LessOrEqual",
+         "contents":"LessOrEqual(${1:value1}, ${2:value2});"
+      },
+
+      // Control flow
+      {
+         "trigger":"Return",
+         "contents":"Return();"
+      },
+      {
+         "trigger":"Wait",
+         "contents":"Wait(${1:seconds});"
+      },
+      {
+         "trigger":"While",
+         "contents":"While(${1:condition})\n{\n\t${2:body}\n}"
+      },
+
+      // Entity management
+      {
+         "trigger":"Despawn",
+         "contents":"Despawn(${1:entityId});"
+      },
+
+      // Dialogue
+      {
+         "trigger":"SpeakDialogue",
+         "contents":"SpeakDialogue(${1:entityId}, ${2:dialogueName}, ${3:arg1}, ${4:arg2}, ${5:arg3});"
+      },
+      {
+         "trigger":"SpeakDialogueToEntity",
+         "contents":"SpeakDialogueToEntity(${1:speakerTag}, ${2:targetTag}, ${3:dialogueName}, ${4:arg});"
+      },
+
+      // AI
+      {
+         "trigger":"AddAggressor",
+         "contents":"AddAggressor(${1:targetTag}, ${2:aggressorTag});"
+      },
+      {
+         "trigger":"Attack",
+         "contents":"Attack(${1:entityTag}, ${2:targetId}, ${3:mode});"
+      },
+      {
+         "trigger":"FollowWaypointRoute",
+         "contents":"FollowWaypointRoute(${1:entityId}, ${2:routeId});"
+      },
+      {
+         "trigger":"SetEngagementRule",
+         "contents":"SetEngagementRule(${1:entityTag}, ${2:ruleValue});"
+      },
+      {
+         "trigger":"EnemiesAreEngaged",
+         "contents":"EnemiesAreEngaged();"
+      },
+      {
+         "trigger":"CreateDisturbance",
+         "contents":"CreateDisturbance(${1:disturbanceTypeName}, ${2:position}, ${3:entityInteractedWith});"
+      },
+      {
+         "trigger":"SetLayerGroupEnabledState",
+         "contents":"SetLayerGroupEnabledState(${1:layerGroupName}, ${2:state});"
+      },
+      {
+         "trigger":"Hunt",
+         "contents":"Hunt(${1:entityTag}, ${2:mode});"
+      },
+      {
+         "trigger":"SetIgnorePlayer",
+         "contents":"SetIgnorePlayer(${1:entityTag}, ${2:ignore});"
+      },
+      {
+         "trigger":"DisableAllEnemies",
+         "contents":"DisableAllEnemies();"
+      },
+      {
+         "trigger":"TargetNeutralised",
+         "contents":"TargetNeutralised(${1:entityTag})"
+      },
+      {
+         "trigger":"FollowOnSpawnRoute",
+         "contents":"FollowOnSpawnRoute(${1:entityTag});"
+      },
+
+      // Doors/object interaction
+      {
+         "trigger":"Open",
+         "contents":"Open(${1:doorOrObjectTag});"
+      },
+      {
+         "trigger":"Unlock",
+         "contents":"Unlock(${1:doorTag});"
+      },
+      {
+         "trigger":"Close",
+         "contents":"Close(${1:doorTag});"
+      },
+      {
+         "trigger":"Lock",
+         "contents":"Lock(${1:doorTag});"
+      },
+      {
+         "trigger":"SwitchPressed",
+         "contents":"SwitchPressed(${1:switchName})"
+      },
+      {
+         "trigger":"Teleport",
+         "contents":"Teleport(${1:entityTag}, ${2:targetLocation});"
+      },
+
+      // Synchronization / Script
+      {
+         "trigger":"WaitForScriptLock",
+         "contents":"WaitForScriptLock();"
+      },
+      {
+         "trigger":"LockScript",
+         "contents":"LockScript();"
+      },
+      {
+         "trigger":"UnlockScript",
+         "contents":"UnlockScript();"
+      },
+      {
+         "trigger":"ScriptIsLocked",
+         "contents":"ScriptIsLocked();"
+      }
+      
+   ]
+}

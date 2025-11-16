@@ -1,0 +1,50 @@
+%YAML 1.2
+---
+name: Fallen Aces Script
+file_extensions:
+  - txt
+scope: source.fallen-aces
+contexts:
+  main:
+    # Strings
+    - match: '"'
+      scope: punctuation.definition.string.begin.fallen-aces
+      push: double_quoted_string
+
+    # Comments
+    - match: '//'
+      scope: punctuation.definition.comment.fallen-aces
+      push: line_comment
+
+    # Control flow functions
+    - match: '\b(If|While|Return)\b(?=\()'
+      scope: keyword.control.fallen-aces
+
+    # All other functions (starting with capital letter)
+    - match: '\b[A-Z][A-Za-z0-9_]*\b(?=\()'
+      scope: entity.name.function.fallen-aces
+
+    # Numbers
+    - match: '\b-?[0-9]+(\.[0-9]+)?\b'
+      scope: constant.numeric.fallen-aces
+
+    # Braces and punctuation
+    - match: '[{}()]'
+      scope: punctuation.section.block.fallen-aces
+    - match: ','
+      scope: punctuation.separator.fallen-aces
+    - match: ';'
+      scope: punctuation.terminator.fallen-aces
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.fallen-aces
+    - match: '\\.'
+      scope: constant.character.escape.fallen-aces
+    - match: '"'
+      scope: punctuation.definition.string.end.fallen-aces
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.fallen-aces
+    - match: $
+      pop: true
