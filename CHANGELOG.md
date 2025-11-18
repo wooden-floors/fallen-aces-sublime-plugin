@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.4] - 2025-11-18
+### Fixed
+- Changed default value for `ShowCutsceneBars`, `SetCutsceneModeForHands`, `SetGodMode` to `1`
+
 ## [0.0.3] - 2025-11-16
 ### Added
 - Reload cache on level changes

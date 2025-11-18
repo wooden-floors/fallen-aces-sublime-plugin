@@ -61,7 +61,7 @@
       },
       {
          "trigger":"SetGodMode",
-         "contents":"SetGodMode(${1:enabled});"
+         "contents":"SetGodMode(${1:1});"
       },
       {
          "trigger":"Neutralize",
@@ -187,11 +187,11 @@
       },
       {
          "trigger":"ShowCutsceneBars",
-         "contents":"ShowCutsceneBars(${1:enabled});"
+         "contents":"ShowCutsceneBars(${1:1});"
       },
       {
          "trigger":"SetCutsceneModeForHands",
-         "contents":"SetCutsceneModeForHands(${1:enabled});"
+         "contents":"SetCutsceneModeForHands(${1:1});"
       },
       {
          "trigger":"Look",
