@@ -139,7 +139,11 @@
       },
       {
          "trigger":"ShowNotification",
-         "contents":"ShowNotification(${1:message}, ${2:duration});"
+         "contents":"ShowNotification(\"${1:messageOrVariableName}\");"
+      },
+      {
+         "trigger":"ShowNotification (with type)",
+         "contents":"ShowNotification(\"${1:messageOrVariableName}\", ${2:messageType});"
       },
       {
          "trigger":"ShowDebugMessage",
@@ -262,8 +266,12 @@
          "contents":"If(${1:condition})\n{\n\t${2:body}\n}"
       },
       {
-         "trigger":"Greater",
-         "contents":"Greater(${1:value1}, ${2:value2})"
+         "trigger":"Greator",
+         "contents":"Greator(${1:value1}, ${2:value2})"
+      },
+      {
+         "trigger":"GreatorOrEqual",
+         "contents":"GreatorOrEqual(${1:value1}, ${2:value2})"
       },
       {
          "trigger":"Equal",
@@ -275,7 +283,7 @@
       },
       {
          "trigger":"LessOrEqual",
-         "contents":"LessOrEqual(${1:value1}, ${2:value2});"
+         "contents":"LessOrEqual(${1:value1}, ${2:value2})"
       },
 
       // Control flow
@@ -290,6 +298,24 @@
       {
          "trigger":"While",
          "contents":"While(${1:condition})\n{\n\t${2:body}\n}"
+      },
+
+      // Math
+      {
+         "trigger":"Add",
+         "contents":"Add(${1:variableName}, ${2:valueOrVariableName});"
+      },
+      {
+         "trigger":"Subtract",
+         "contents":"Subtract(${1:variableName}, ${2:valueOrVariableName});"
+      },
+      {
+         "trigger":"Multiply",
+         "contents":"Multiply(${1:variableName}, ${2:valueOrVariableName});"
+      },
+      {
+         "trigger":"Divide",
+         "contents":"Divide(${1:variableName}, ${2:valueOrVariableName});"
       },
 
       // Entity management
@@ -342,8 +368,12 @@
          "contents":"Hunt(${1:entityTag}, ${2:mode});"
       },
       {
-         "trigger":"SetIgnorePlayer",
-         "contents":"SetIgnorePlayer(${1:entityTag}, ${2:ignore});"
+         "trigger":"SetIgnorePlayer (by everyone)",
+         "contents":"SetIgnorePlayer(${1:1});"
+      },
+      {
+         "trigger":"SetIgnorePlayer (by specific enemy)",
+         "contents":"SetIgnorePlayer(${1:enemyTag}, ${2:1});"
       },
       {
          "trigger":"DisableAllEnemies",
