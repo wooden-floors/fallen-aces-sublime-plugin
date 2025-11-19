@@ -26,6 +26,11 @@ HARDCODED_SUGGESTIONS = {
         "SpeakThenPutaway": 1,
         "SpeakButDontPutaway": 2,
         "SpeakButDontShow": 3,
+    },
+    "logLevel": {
+        "Info": 0,
+        "Warning": 1,
+        "Error": 2
     }
 }
 

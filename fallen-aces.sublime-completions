@@ -151,11 +151,15 @@
       },
       {
          "trigger":"ShowNotification (with type)",
-         "contents":"ShowNotification(\"${1:messageOrVariableName}\", ${2:messageType});"
+         "contents":"ShowNotification(\"${1:messageOrVariableName}\", ${2:notificationType});"
       },
       {
          "trigger":"ShowDebugMessage",
          "contents":"ShowDebugMessage(\"${1:message}\");"
+      },
+      {
+         "trigger":"ShowDebugMessage (with log level)",
+         "contents":"ShowDebugMessage(\"${1:message}\", ${2:logLevel});"
       },
       {
          "trigger":"PutAwayRadioOnHUD",

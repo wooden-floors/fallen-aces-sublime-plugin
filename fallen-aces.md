@@ -102,3 +102,15 @@ If (Greater("delia_normalised_hitpoints", 0.8))
     ...
 }
 ```
+
+## ShowDebugMessage(message, logLevel)
+Write message to debug log (`AppData\LocalLow\New Blood Interactive\Fallen Aces\Player.log`)
+
+**How to use**
+```fallen
+ShowDebugMessage("Text");
+
+ShowDebugMessage("Text", 0); // INFO (by default)
+ShowDebugMessage("Text", 1); // WARN
+ShowDebugMessage("Text", 2); // ERROR
+```
