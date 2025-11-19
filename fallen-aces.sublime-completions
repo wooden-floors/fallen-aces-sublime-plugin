@@ -275,11 +275,11 @@
       },
       {
          "trigger":"Greater",
-         "contents":"Greator(${1:value1}, ${2:value2})"
+         "contents":"Greater(${1:value1}, ${2:value2})"
       },
       {
          "trigger":"GreaterOrEqual",
-         "contents":"GreatorOrEqual(${1:value1}, ${2:value2})"
+         "contents":"GreaterOrEqual(${1:value1}, ${2:value2})"
       },
       {
          "trigger":"Equal",
