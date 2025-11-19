@@ -32,7 +32,7 @@
       },
       {
          "trigger":"GetHitpointsNormalised",
-         "contents":"GetHitpointsNormalised(${1:entity}, ${2:outputVariable});"
+         "contents":"GetHitpointsNormalised(${1:entityTag}, ${2:outputVariable});"
       },
       {
          "trigger":"TakeDamage",
@@ -48,7 +48,11 @@
       },
       {
          "trigger":"SetState",
-         "contents":"SetState(${1:entityTag}, ${2:state});"
+         "contents":"SetState(${1:entityTag}, ${2:stateName});"
+      },
+      {
+         "trigger":"PlayAnimation",
+         "contents":"PlayAnimation(${1:entityTag}, ${2:animationName});"
       },
       {
          "trigger":"SetLightState",
@@ -70,6 +74,10 @@
       {
          "trigger":"MakeGatekeeper",
          "contents":"MakeGatekeeper(${1:entityTag}, ${2:accessTag});"
+      },
+      {
+         "trigger":"SetVariant",
+         "contents":"SetVariant(${1:entityTag}, ${2:variant});"
       },
 
       // Inventory
@@ -327,7 +335,7 @@
       // Dialogue
       {
          "trigger":"SpeakDialogue",
-         "contents":"SpeakDialogue(${1:entityId}, ${2:dialogueName}, ${3:arg1}, ${4:arg2}, ${5:arg3});"
+         "contents":"SpeakDialogue(${1:speakerEntityTag}, \"${2:voicelineName}\", ${3:waitForDialogueToFinish}, ${4:priority}, ${5:overrideEqualPriority}, ${6:speakThroughRadioSetting}, ${7:skippable});"
       },
       {
          "trigger":"SpeakDialogueToEntity",
@@ -357,11 +365,7 @@
       },
       {
          "trigger":"CreateDisturbance",
-         "contents":"CreateDisturbance(${1:disturbanceTypeName}, ${2:position}, ${3:entityInteractedWith});"
-      },
-      {
-         "trigger":"SetLayerGroupEnabledState",
-         "contents":"SetLayerGroupEnabledState(${1:layerGroupName}, ${2:state});"
+         "contents":"CreateDisturbance(\"${1:disturbanceTypeName}\", ${2:positionEntityTag}, ${3:interactedWithEntityTag});"
       },
       {
          "trigger":"Hunt",

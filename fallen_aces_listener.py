@@ -16,6 +16,19 @@ VARIABLE_NAME_TO_DEFINITION_ID = {
     "moveStateTag": 521, # MoveState
 }
 
+HARDCODED_SUGGESTIONS = {
+    "disturbanceTypeName": {
+        "SomethingTurnedOn": "SomethingTurnedOn",
+        "SomethingTurnedOff": "SomethingTurnedOff",
+    },
+    "speakThroughRadioSetting": {
+        "DontSpeakThroughRadio": 0,
+        "SpeakThenPutaway": 1,
+        "SpeakButDontPutaway": 2,
+        "SpeakButDontShow": 3,
+    }
+}
+
 class FallenAcesScriptEventListener(sublime_plugin.EventListener):
     def _should_apply(self, view):
         return view.match_selector(0, "source.fallen-aces")
@@ -84,6 +97,8 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
             if definition_id in level_info["things"]:
                 tags = level_info["things"][definition_id]
                 completions = [(level_info["tags"][tag], str(tag)) for tag in tags]
+        elif arg_name in HARDCODED_SUGGESTIONS:
+            completions = [(text, str(value)) for text, value in HARDCODED_SUGGESTIONS[arg_name].items()]
         elif arg_name.lower().endswith("tag"):
             completions = [(name, str(number)) for number, name in level_info["tags"].items()]
 

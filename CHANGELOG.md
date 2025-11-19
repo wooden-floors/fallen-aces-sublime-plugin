@@ -1,8 +1,20 @@
 # Changelog
 
+## [0.0.5] - 2025-11-19
+### Added
+- Add autocomplete for `PlayAnimation`, `SetVariant` functions
+- Add documentation for `PlayAnimation`, `SetState`, `CreateDisturbance`, `GetHitpointsNormalised` functions
+- Add autocomplete for `disturbanceTypeName` and `speakThroughRadioSetting` parameters
+
+### Fixed
+- Change signature for `SpeakDialogue` function
+
+### Removed
+- Remove obsolete `SetLayerGroupEnabledState` function
+
 ## [0.0.4] - 2025-11-18
 ### Fixed
-- Changed default value for `ShowCutsceneBars`, `SetCutsceneModeForHands`, `SetGodMode` to `1`
+- Change default value for `ShowCutsceneBars`, `SetCutsceneModeForHands`, `SetGodMode` to `1`
 
 ## [0.0.3] - 2025-11-16
 ### Added
