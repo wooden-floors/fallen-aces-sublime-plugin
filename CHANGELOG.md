@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.6] - 2025-11-20
+### Added
+- Add autocomplete for `enemyTag` parameter
+- Add hover hint for `enemyTag`, `speakThroughRadioSetting`, `logLevel` parameters
+
+### Fixed
+- Fix autocomplete & hover for functions with multiple signatures
+
 ## [0.0.5] - 2025-11-19
 ### Added
 - Add autocomplete for `PlayAnimation`, `SetVariant` functions

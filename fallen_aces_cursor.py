@@ -27,8 +27,8 @@ def get_cursor_position(view, point):
     args_text = match.group(2)
     args_start = match.start(2)
 
-    _log("Function name {}".format(func_name))
-    _log("Args {}".format(args_text))
+    _log("Function name: {}".format(func_name))
+    _log("Args: {}".format(args_text))
 
     args = []
     for match_arg in re.finditer(r'([^,]+)', args_text):
@@ -48,7 +48,9 @@ def get_cursor_position(view, point):
     if arg_index is None:
         return None
 
-    return {
-        "function_name": func_name,
-        "arg_index": arg_index
+    data = {
+        "function_name": "{}[{}]".format(func_name, len(args)),
+        "arg_index": arg_index,
     }
+    _log("Data: {}".format(data))
+    return data

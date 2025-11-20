@@ -94,8 +94,10 @@ def _parse_function_args():
     function_args = {}
 
     for completion in data.get("completions", []):
-        function_name = completion.get("trigger")
-        function_args[function_name] = re.findall(r'\$\{\d+:([^}]+)\}', completion.get("contents"))
+        function_name_parsed = completion.get("trigger").split(' ', 1)[0].strip()
+        function_args_parsed = re.findall(r'\$\{\d+:([^}]+)\}', completion.get("contents"))
+        function_name = "{}[{}]".format(function_name_parsed, len(function_args_parsed))
+        function_args[function_name] = function_args_parsed
 
-    # _log(function_definitions)
+    _log(function_args)
     return function_args

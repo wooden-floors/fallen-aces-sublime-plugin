@@ -10,10 +10,24 @@ from .fallen_aces_function_definition import get_function_definition
 from .fallen_aces_cursor import get_cursor_position
 
 VARIABLE_NAME_TO_DEFINITION_ID = {
-    "lightStateTag": 517, # LightState
-    "lightSourceTag": 518, # PointLight
-    "movableGeometryTag": 534, # MovableGeometry
-    "moveStateTag": 521, # MoveState
+    "lightStateTag": [517], # LightState
+    "lightSourceTag": [518], # PointLight
+    "movableGeometryTag": [534], # MovableGeometry
+    "moveStateTag": [521], # MoveState
+    "enemyTag": [
+        10001, # Goon
+        10002, # Pipeguy
+        10003, # PistolGuy
+        10004, # Malone
+        10005, # GoonThug
+        10006, # PipeguyWiseguy
+        10009, # MolotovMook
+        10011, # SnipingMook
+        10012, # ArmedMook
+        10014, # KnifeGuy
+        10017, # MachineGunMook
+        10021, # BigPalooka
+    ]
 }
 
 HARDCODED_SUGGESTIONS = {
@@ -22,15 +36,15 @@ HARDCODED_SUGGESTIONS = {
         "SomethingTurnedOff": "SomethingTurnedOff",
     },
     "speakThroughRadioSetting": {
-        "DontSpeakThroughRadio": 0,
-        "SpeakThenPutaway": 1,
-        "SpeakButDontPutaway": 2,
-        "SpeakButDontShow": 3,
+         "0": "DontSpeakThroughRadio",
+         "1": "SpeakThenPutaway",
+         "2": "SpeakButDontPutaway",
+         "3": "SpeakButDontShow",
     },
     "logLevel": {
-        "Info": 0,
-        "Warning": 1,
-        "Error": 2
+        "0": "Info",
+        "1": "Warning",
+        "2": "Error",
     }
 }
 
@@ -72,6 +86,8 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
 
             if arg_name == "eventNumber" and word in level_info["events"]:
                  return level_info["events"][word]
+            elif arg_name in HARDCODED_SUGGESTIONS:
+                return HARDCODED_SUGGESTIONS[arg_name][str(word)]
             elif arg_name.lower().endswith("tag") and word in level_info["tags"]:
                 return level_info["tags"][word]
 
@@ -98,12 +114,11 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
         if arg_name == "eventNumber":
             completions = [(name, str(number)) for number, name in level_info["events"].items()]
         elif arg_name in VARIABLE_NAME_TO_DEFINITION_ID:
-            definition_id = VARIABLE_NAME_TO_DEFINITION_ID[arg_name]
-            if definition_id in level_info["things"]:
-                tags = level_info["things"][definition_id]
-                completions = [(level_info["tags"][tag], str(tag)) for tag in tags]
+            definition_ids = VARIABLE_NAME_TO_DEFINITION_ID[arg_name]
+            tags = [tag for definition_id in definition_ids for tag in level_info["things"].get(definition_id, [])]
+            completions = [(level_info["tags"][tag], str(tag)) for tag in tags]
         elif arg_name in HARDCODED_SUGGESTIONS:
-            completions = [(text, str(value)) for text, value in HARDCODED_SUGGESTIONS[arg_name].items()]
+            completions = [(text, value) for value, text in HARDCODED_SUGGESTIONS[arg_name].items()]
         elif arg_name.lower().endswith("tag"):
             completions = [(name, str(number)) for number, name in level_info["tags"].items()]
 
