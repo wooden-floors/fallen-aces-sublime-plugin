@@ -13,7 +13,7 @@ contexts:
 
     # Comments
     - match: '//'
-      scope: punctuation.definition.comment.fallen-aces
+      scope: punctuation.definition.comment.begin.fallen-aces
       push: line_comment
 
     # Control flow functions

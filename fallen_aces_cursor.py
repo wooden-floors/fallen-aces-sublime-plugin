@@ -45,11 +45,9 @@ def get_cursor_position(view, point):
             arg_index = i
             break
 
-    if arg_index is None:
-        return None
-
     data = {
-        "function_name": "{}[{}]".format(func_name, len(args)),
+        "function_id": "{}[{}]".format(func_name, len(args)),
+        "function_name": func_name,
         "arg_index": arg_index,
     }
     _log("Data: {}".format(data))

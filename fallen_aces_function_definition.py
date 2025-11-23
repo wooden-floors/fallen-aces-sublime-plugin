@@ -25,10 +25,10 @@ def get_function_definition(view):
     args = _parse_function_args()
     hints = _parse_function_hints()
 
-    for function_name in args.keys():
-        CACHE[function_name] = {
-            "args": args[function_name],
-            "hint": hints.get(function_name)
+    for function_id in args.keys():
+        CACHE[function_id] = {
+            "args": args[function_id],
+            "hint": hints.get(function_id)
         }
 
     return CACHE
@@ -52,9 +52,17 @@ def _parse_function_hints():
 
         function_line = lines[0].lstrip("# ").strip()
         function_name = function_line.split("(")[0]
+        match = re.match(r'(\w+)\((.*?)\)', function_line)
+        if not match:
+            _log("Error: coudn't parse md definition for {}".format(function_line))
+            continue
 
-        function_hints[function_name] = _parse_markdown_to_html(section)
+        function_name, args = match.groups()
+        total_args = 0 if not args.strip() else len([arg for arg in args.split(",") if arg.strip()])
 
+        function_hints["{}[{}]".format(function_name, total_args)] = _parse_markdown_to_html(section)
+
+    _log("function hints: {}".format(function_hints))
     return function_hints
 
 def _parse_markdown_to_html(text):
@@ -96,8 +104,8 @@ def _parse_function_args():
     for completion in data.get("completions", []):
         function_name_parsed = completion.get("trigger").split(' ', 1)[0].strip()
         function_args_parsed = re.findall(r'\$\{\d+:([^}]+)\}', completion.get("contents"))
-        function_name = "{}[{}]".format(function_name_parsed, len(function_args_parsed))
-        function_args[function_name] = function_args_parsed
+        function_id = "{}[{}]".format(function_name_parsed, len(function_args_parsed))
+        function_args[function_id] = function_args_parsed
 
     _log(function_args)
     return function_args

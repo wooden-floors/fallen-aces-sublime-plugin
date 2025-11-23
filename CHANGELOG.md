@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.0.7] - 2025-11-23
+### Fixed
+- Fix missing function hints
+- Fix 'comment line' hotkey
+
 ## [0.0.6] - 2025-11-20
 ### Added
 - Add autocomplete for `enemyTag` parameter

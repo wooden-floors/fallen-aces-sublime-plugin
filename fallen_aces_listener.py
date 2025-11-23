@@ -70,19 +70,21 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
             return True
  
     def _get_hover_hint(self, view, point, word):
+        cursor_position = get_cursor_position(view, point)
+        function_id = cursor_position["function_id"]
+        function_name = cursor_position["function_name"]
+
         function_definitions = get_function_definition(view)
 
-        if word in function_definitions:
-            return function_definitions[word]["hint"]
+        if function_name == word and function_id in function_definitions:
+            return function_definitions[function_id]["hint"]
 
         if word.isdigit():
             level_info = get_level_info(view)
             word = int(word)
 
-            cursor_position = get_cursor_position(view, point)
-            function_name = cursor_position["function_name"]
             arg_index = cursor_position["arg_index"]
-            arg_name = function_definitions[function_name]["args"][arg_index]
+            arg_name = function_definitions[function_id]["args"][arg_index]
 
             if arg_name == "eventNumber" and word in level_info["events"]:
                  return level_info["events"][word]
@@ -101,12 +103,12 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
         if not cursor_position:
             return
 
-        function_name = cursor_position["function_name"]
+        function_id = cursor_position["function_id"]
         arg_index = cursor_position["arg_index"]
 
         function_definitions = get_function_definition(view)
 
-        arg_name = function_definitions[function_name]["args"][arg_index]
+        arg_name = function_definitions[function_id]["args"][arg_index]
 
         level_info = get_level_info(view)
 

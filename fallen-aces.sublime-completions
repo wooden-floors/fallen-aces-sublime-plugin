@@ -389,7 +389,7 @@
       },
       {
          "trigger":"TargetNeutralised",
-         "contents":"TargetNeutralised(${1:entityTag})"
+         "contents":"TargetNeutralised(${1:enemyTag})"
       },
       {
          "trigger":"FollowOnSpawnRoute",
