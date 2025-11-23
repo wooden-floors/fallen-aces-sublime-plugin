@@ -1,6 +1,28 @@
 {
    "scope": "source.fallen-aces - string - comment",
    "completions":[
+      // Shortcuts
+      {
+         "trigger":"todo",
+         "contents":"// TODO: ${1}"
+      },
+      {
+         "trigger":"ife",
+         "contents":"If(Equal(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}",
+         "annotation": "If Equals"
+      },
+      {
+         "trigger":"wht",
+         "contents":"While(Equal(1, 1))\n{\n\t${1:body}\n}",
+         "annotation": "While True"
+      },
+      {
+         "trigger":"inc",
+         "contents":"Add(\"&${1}\", 1);",
+         "annotation": "Increment"
+      },
+
+
       // Entry point
       {
          "trigger":"main",
@@ -244,10 +266,6 @@
       {
          "trigger":"PlayGenericHandsAnimation",
          "contents":"PlayGenericHandsAnimation(\"${1:animationName}\");"
-      },
-      {
-         "trigger":"SetCutsceneModeForHands",
-         "contents":"SetCutsceneModeForHands(${1:state});"
       },
       {
          "trigger":"CutsceneCamera",
