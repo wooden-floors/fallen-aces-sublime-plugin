@@ -4,13 +4,14 @@
 <plist version="1.0">
 <dict>
     <key>name</key>
-    <string>Comments</string>
+    <string>Comments + Folding</string>
 
     <key>scope</key>
     <string>source.fallen-aces</string>
 
     <key>settings</key>
     <dict>
+        <!-- comments -->
         <key>shellVariables</key>
         <array>
             <dict>
@@ -20,6 +21,13 @@
                 <string>// </string>
             </dict>
         </array>
+
+        <!-- folding -->
+        <key>foldingStartMarker</key>
+        <string>^\s*\{</string>
+
+        <key>foldingStopMarker</key>
+        <string>^\s*\}</string>
     </dict>
 </dict>
 </plist>
