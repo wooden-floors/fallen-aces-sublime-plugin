@@ -3,33 +3,54 @@
 name: Fallen Aces Script
 file_extensions:
   - txt
+  - fa
 scope: source.fallen-aces
 contexts:
   main:
-    # Strings
+    # Comments and Strings (shared)
+    - include: common
+
+    # Function Definitions: Only at the top level
+    - match: '\b[A-Z][A-Za-z0-9_]*\b(?=\s*\()'
+      scope: entity.name.function.fallen-aces
+
+    # Entering a function body or any block
+    - match: '\{'
+      scope: punctuation.section.block.fallen-aces
+      push: block_context
+
+  block_context:
+    - meta_scope: meta.block.fallen-aces
+    - include: common
+
+    # Control flow: Priority keywords
+    - match: '\b(If|While|Return)\b(?=\s*\()'
+      scope: keyword.control.fallen-aces
+
+    # Function Calls: Inside any block
+    - match: '\b[A-Z][A-Za-z0-9_]*\b(?=\s*\()'
+      scope: variable.function.fallen-aces
+
+    # Nested blocks (If/While)
+    - match: '\{'
+      scope: punctuation.section.block.fallen-aces
+      push: block_context
+
+    # Exiting a block
+    - match: '\}'
+      scope: punctuation.section.block.fallen-aces
+      pop: true
+
+  common:
     - match: '"'
       scope: punctuation.definition.string.begin.fallen-aces
       push: double_quoted_string
-
-    # Comments
     - match: '//'
       scope: punctuation.definition.comment.begin.fallen-aces
       push: line_comment
-
-    # Control flow functions
-    - match: '\b(If|While|Return)\b(?=\()'
-      scope: keyword.control.fallen-aces
-
-    # All other functions (starting with capital letter)
-    - match: '\b[A-Z][A-Za-z0-9_]*\b(?=\()'
-      scope: entity.name.function.fallen-aces
-
-    # Numbers
     - match: '\b-?[0-9]+(\.[0-9]+)?\b'
       scope: constant.numeric.fallen-aces
-
-    # Braces and punctuation
-    - match: '[{}()]'
+    - match: '[()]'
       scope: punctuation.section.block.fallen-aces
     - match: ','
       scope: punctuation.separator.fallen-aces

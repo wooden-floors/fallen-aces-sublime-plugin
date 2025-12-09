@@ -1,47 +1,44 @@
-# FallenAces Plugin for Sublime Text
+# Sublime Text Plugin for Fallen Aces scripting 
 
-A Sublime Text plugin that enhances scripting for **Fallen Aces** development.  
+## Features
 
-Provides:
+- **Syntax Highlighting** for Fallen Aces script files (`.txt`)
+- **Context-aware completions** based on level metadata
+- **Hover hints** for functions, events and tags
 
-- Hover hints for functions, events, and tags
-- Context-aware completions based on level metadata
-- Syntax highlighting
-
-## Requirements
-
-- Sublime Text (https://www.sublimetext.com/)
 
 ## Installation
 
-1. Clone this repo or download as ZIP.
-2. Copy `fallen_aces_*` and `fallen-aces.*` files into your Sublime `Packages/User` directory.
+1. Open your Sublime Text `Packages` directory (**Preferences > Browse Packages...**).
+2. Create a folder named `FallenAces`.
+3. Copy the following files into that folder:
+   - `fallen_aces.py`
+   - `fallen-aces-data.json`
+   - `fallen-aces.sublime-syntax`
+   - `fallen-aces.tmPreferences`
 
 ## Usage
-- Open chapter folder (the one with `chapterInfo.txt` in it) in Sublime Text.
-- Save as Sublime Project (`Project > Save Project As ...`) in chapter folder. `*.sublime-project` file should be created.
-- Open script file.
-- Select syntax (`View > Syntax > Fallen Aces Script`)
-- Start typing function names to see function completions.
-- Hover on functions to see function description (*Note: current support is very limited*)
-- Start typing event or tag names as arguments in corresponding functions to see arg completions. (*Note: current support is not fully completed*)
-- Hover on event/tag identifiers to see text name.
 
-## Trouble shooting
-- Enable `fallen_aces_plugin_debug_enabled` setting in `*.sublime-project file`:
-```
+### 1. Project Setup
+1. Open your chapter folder (the one containing `chapterInfo.txt`) in Sublime Text.
+2. Save it as a project: **Project > Save Project As...** inside the chapter folder.
+3. The plugin will automatically find and parse the `world_file_name` specified in your `chapterInfo.txt`.
+
+### 2. Syntax Selection
+- Open a script file.
+- Set the syntax to **Fallen Aces Script** (via the status bar or **View > Syntax**).
+
+### 3. Debugging
+If you encounter issues, you can enable debug logging in your `*.sublime-project` file:
+
+```json
 {
-	"folders":
-	[
-		...
-	],
-
-	"settings": {
-		"fallen_aces_plugin_debug_enabled": true
-	}
+    "settings": {
+        "fallen_aces_plugin_debug_enabled": true
+    }
 }
-
 ```
-- Open console (`` Ctrl + ` ``)
+Logs will appear in the Sublime Text console (``Ctrl + ` ``).
 
-
+## Requirements
+- Sublime Text (https://www.sublimetext.com/)

@@ -1,0 +1,473 @@
+{
+  "functions": [
+    {
+      "name": "SetLocalVariable",
+      "variants": [
+        {
+          "args": ["name", "value"],
+          "description": "Sets a local variable that can be read from the same script.",
+          "usage": "SetLocalVariable(\"phone_is_ringing\", 1);\n\nIf(Equal(\"phone_is_ringing\", 1))\n{\n    ...\n}"
+        }
+      ]
+    },
+    {
+      "name": "SetWorldVariable",
+      "variants": [
+        {
+          "args": ["name", "value"],
+          "description": "Sets a world variable that can be read from other scripts.",
+          "usage": "SetWorldVariable(\"phone_is_ringing\", 1);\n\nIf(Equal(\"phone_is_ringing\", 1))\n{\n    ...\n}"
+        }
+      ]
+    },
+    {
+      "name": "SetProfileFlag",
+      "variants": [{"args": ["flagName", "value"]}]
+    },
+    {
+      "name": "GetProfileFlag",
+      "variants": [{"args": ["flagName", "outputVar"]}]
+    },
+    {
+      "name": "SetHitpoints",
+      "variants": [{"args": ["entityTag", "hitpoints"]}]
+    },
+    {
+      "name": "GetHitpointsNormalised",
+      "variants": [
+        {
+          "args": ["entityTag", "outputVariable"],
+          "description": "Set a `outputVariable` with the current hitpoints of an enemy normalized between 0-1 (1 being full health).",
+          "usage": "GetHitpointsNormalised(\"delia\", \"delia_normalised_hitpoints\");\n\nIf (LessOrEqual(\"delia_normalised_hitpoints\", 0))\n{\n    ...\n}\n\nIf (Greater(\"delia_normalised_hitpoints\", 0.8))\n{\n    ...\n}"
+        }
+      ]
+    },
+    {
+      "name": "TakeDamage",
+      "variants": [{"args": ["entityTag", "damageAmount"]}]
+    },
+    {
+      "name": "IsBroken",
+      "tags": ["predicate"],
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "IsUnderwater",
+      "tags": ["predicate"],
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "SetState",
+      "variants": [
+        {
+          "args": ["entityTag", "stateName"],
+          "description": "Sets entity state.",
+          "usage": "SetWorldVariable(\"delia\", 40);\nSetState(\"delia\", \"&Sleeping\");\n\n// Delia states:\n// - \"&Sleeping\"\n\n// Goon states:\n// - \"Shitting\""
+        }
+      ]
+    },
+    {
+      "name": "PlayAnimation",
+      "variants": [
+        {
+          "args": ["entityTag", "animationName"],
+          "description": "Play entity animation.",
+          "usage": "SetWorldVariable(\"nightwave\", 19);\nPlayAnimation(\"nightwave\", \"Stand - Injured - Idle\");\n\n// Nigthwave animations:\n// - \"Stand - Injured - Idle\"\n// - \"Sit - Injured - Idle\"\n\n// Blake animations:\n// - \"Idle\""
+        }
+      ]
+    },
+    {
+      "name": "SetLightState",
+      "variants": [{"args": ["lightSourceTag", "lightStateTag"]}]
+    },
+    {
+      "name": "SetMoveState",
+      "variants": [{"args": ["movableGeometryTag", "moveStateTag"]}]
+    },
+    {
+      "name": "SetGodMode",
+      "variants": [{"args": ["state"]}]
+    },
+    {
+      "name": "Neutralize",
+      "variants": [{"args": ["targetTag", "immediate"]}]
+    },
+    {
+      "name": "MakeGatekeeper",
+      "variants": [{"args": ["entityTag", "accessTag"]}]
+    },
+    {
+      "name": "SetVariant",
+      "variants": [{"args": ["entityTag", "variant"]}]
+    },
+    {
+      "name": "GiveGadget",
+      "variants": [{"args": ["gadgetName"]}]
+    },
+    {
+      "name": "DropInventory",
+      "variants": [{"args": ["entityTag", "itemTag"]}]
+    },
+    {
+      "name": "HasTaggedItem",
+      "tags": ["predicate"],
+      "variants": [{"args": ["entityTag", "itemTag"]}]
+    },
+    {
+      "name": "Give",
+      "variants": [{"args": ["itemName", "amount"]}]
+    },
+    {
+      "name": "GiveMap",
+      "variants": [{"args": ["mapName", "levelName"]}]
+    },
+    {
+      "name": "AddObjective",
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "SetObjectivesPhoto",
+      "variants": [{"args": ["photoName"]}]
+    },
+    {
+      "name": "FailObjective",
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "SetObjectiveMaxCount",
+      "variants": [{"args": ["objectiveName", "maxCount"]}]
+    },
+    {
+      "name": "CompleteObjective",
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "FindSecret",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "EndLevel",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "GameOver",
+      "variants": [{"args": ["reason"]}]
+    },
+    {
+      "name": "ShowCollectedComicMessage",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "ShowTutorial",
+      "variants": [{"args": ["tutorialName"]}]
+    },
+    {
+      "name": "ShowNotification",
+      "variants": [
+        {"args": ["messageOrVariableName"]},
+        {"args": ["messageOrVariableName", "notificationType"]}
+      ]
+    },
+    {
+      "name": "ShowDebugMessage",
+      "variants": [
+        {
+          "args": ["message"],
+          "description": "Write INFO message to debug log (`AppData\\LocalLow\\New Blood Interactive\\Fallen Aces\\Player.log`)",
+          "usage": "ShowDebugMessage(\"Text\");"
+        },
+        {
+          "args": ["message", "logLevel"],
+          "description": "Write message to debug log (`AppData\\LocalLow\\New Blood Interactive\\Fallen Aces\\Player.log`)",
+          "usage": "ShowDebugMessage(\"Text\", 0); // INFO\nShowDebugMessage(\"Text\", 1); // WARN\nShowDebugMessage(\"Text\", 2); // ERROR"
+        }
+      ]
+    },
+    {
+      "name": "PutAwayRadioOnHUD",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "SetNormalMusicTrack",
+      "variants": [{"args": ["trackId", "loop"]}]
+    },
+    {
+      "name": "SetStealthMusicTrack",
+      "variants": [{"args": ["trackId"]}]
+    },
+    {
+      "name": "SetCombatMusicTrack",
+      "variants": [{"args": ["trackId"]}]
+    },
+    {
+      "name": "PlayStinger",
+      "variants": [{"args": ["stingerName"]}]
+    },
+    {
+      "name": "StopStinger",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "SwitchChannel",
+      "variants": [{"args": ["entityTag", "channelId"]}]
+    },
+    {
+      "name": "PlayMovie",
+      "variants": [{"args": ["movieName"]}]
+    },
+    {
+      "name": "OpenScreen",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "ShowCutsceneBars",
+      "variants": [{"args": ["state"]}]
+    },
+    {
+      "name": "SetCutsceneModeForHands",
+      "variants": [{"args": ["state"]}]
+    },
+    {
+      "name": "Look",
+      "variants": [{"args": ["entityTag", "target"]}]
+    },
+    {
+      "name": "Move",
+      "variants": [{"args": ["entityTag", "destination"]}]
+    },
+    {
+      "name": "PlayCameraAnimation",
+      "variants": [{"args": ["animationName"]}]
+    },
+    {
+      "name": "FadeScreen",
+      "variants": [{"args": ["fadeIn", "duration"]}]
+    },
+    {
+      "name": "StopSkip",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "ShakeScreen",
+      "variants": [{"args": ["intensity", "duration"]}]
+    },
+    {
+      "name": "SetChapterIntroText",
+      "variants": [{"args": ["text"]}]
+    },
+    {
+      "name": "SetNormalGameplayInput",
+      "variants": [{"args": ["state"]}]
+    },
+    {
+      "name": "PlayGenericHandsAnimation",
+      "variants": [{"args": ["animationName"]}]
+    },
+    {
+      "name": "CutsceneCamera",
+      "variants": [{"args": ["startPos", "endPos", "unknown", "duration", "flag"]}]
+    },
+    {
+      "name": "CutsceneCamera2",
+      "variants": [{"args": ["start", "look", "rotateSpeed", "heightSpeed", "endHeightOffset", "stopOnEvent", "skippable"]}]
+    },
+    {
+      "name": "TriggerEvent",
+      "variants": [{"args": ["eventNumber"]}]
+    },
+    {
+      "name": "TriggerEventOnEvent",
+      "variants": [{"args": ["eventNumber", "eventNumber"]}]
+    },
+    {
+      "name": "EventTriggered",
+      "tags": ["predicate"],
+      "variants": [{"args": ["eventNumber"]}]
+    },
+    {
+      "name": "If",
+      "tags": ["control"],
+      "variants": [{"args": ["condition"]}]
+    },
+    {
+      "name": "Greater",
+      "tags": ["predicate"],
+      "variants": [{"args": ["value1", "value2"]}]
+    },
+    {
+      "name": "GreaterOrEqual",
+      "tags": ["predicate"],
+      "variants": [{"args": ["value1", "value2"]}]
+    },
+    {
+      "name": "Equal",
+      "tags": ["predicate"],
+      "variants": [
+        {
+          "args": ["name", "value"],
+          "description": "Compares variable state with given value and returns `true` if equal, `false` otherwise.",
+          "usage": "If(Equal(\"door_open\", 1))\n{\n    ...\n}"
+        }
+      ]
+    },
+    {
+      "name": "Less",
+      "tags": ["predicate"],
+      "variants": [{"args": ["value1", "value2"]}]
+    },
+    {
+      "name": "LessOrEqual",
+      "tags": ["predicate"],
+      "variants": [{"args": ["value1", "value2"]}]
+    },
+    {
+      "name": "Return",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "Wait",
+      "variants": [{"args": ["seconds"]}]
+    },
+    {
+      "name": "While",
+      "tags": ["control"],
+      "variants": [{"args": ["condition"]}]
+    },
+    {
+      "name": "Add",
+      "variants": [{"args": ["variableName", "valueOrVariableName"]}]
+    },
+    {
+      "name": "Subtract",
+      "variants": [{"args": ["variableName", "valueOrVariableName"]}]
+    },
+    {
+      "name": "Multiply",
+      "variants": [{"args": ["variableName", "valueOrVariableName"]}]
+    },
+    {
+      "name": "Divide",
+      "variants": [{"args": ["variableName", "valueOrVariableName"]}]
+    },
+    {
+      "name": "Despawn",
+      "variants": [{"args": ["entityId"]}]
+    },
+    {
+      "name": "SpeakDialogue",
+      "variants": [{"args": ["speakerTag", "voiceline", "wait", "priority", "override", "radioSetting", "skippable"]}]
+    },
+    {
+      "name": "SpeakDialogueToEntity",
+      "variants": [{"args": ["speakerTag", "targetTag", "dialogueName", "arg"]}]
+    },
+    {
+      "name": "AddAggressor",
+      "variants": [{"args": ["targetTag", "aggressorTag"]}]
+    },
+    {
+      "name": "Attack",
+      "variants": [{"args": ["entityTag", "targetId", "mode"]}]
+    },
+    {
+      "name": "FollowWaypointRoute",
+      "variants": [{"args": ["entityId", "routeId"]}]
+    },
+    {
+      "name": "SetEngagementRule",
+      "variants": [{"args": ["entityTag", "ruleValue"]}]
+    },
+    {
+      "name": "EnemiesAreEngaged",
+      "tags": ["predicate"],
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "CreateDisturbance",
+      "variants": [
+        {
+          "args": ["disturbanceTypeName", "positionEntityTag", "entityInteractedWithTag"],
+          "description": "Create disturbance that enemies will investigate.\n\nPosition of `positionEntityTag` is used as disturbance position.\n`entityInteractedWithTag` is an entity that was interacted with to create a disturbance.",
+          "usage": "// 133 - tag of shopbell, 94 - tag of used door\nCreateDisturbance(\"SomethingTurnedOn\", 133, 94); \n\n// Disturbance types:\n// - SomethingTurnedOn\n// - SomethingTurnedOff"
+        }
+      ]
+    },
+    {
+      "name": "Hunt",
+      "variants": [{"args": ["entityTag", "mode"]}]
+    },
+    {
+      "name": "SetIgnorePlayer",
+      "variants": [
+        {"args": ["state"]},
+        {"args": ["enemyTag", "state"]}
+      ]
+    },
+    {
+      "name": "DisableAllEnemies",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "TargetNeutralised",
+      "tags": ["predicate"],
+      "variants": [{"args": ["enemyTag"]}]
+    },
+    {
+      "name": "FollowOnSpawnRoute",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "Open",
+      "variants": [{"args": ["doorOrObjectTag"]}]
+    },
+    {
+      "name": "Unlock",
+      "variants": [{"args": ["doorTag"]}]
+    },
+    {
+      "name": "Close",
+      "variants": [{"args": ["doorTag"]}]
+    },
+    {
+      "name": "Lock",
+      "variants": [{"args": ["doorTag"]}]
+    },
+    {
+      "name": "SwitchPressed",
+      "variants": [{"args": ["switchName"]}]
+    },
+    {
+      "name": "Teleport",
+      "variants": [{"args": ["entityTag", "targetLocation"]}]
+    },
+    {
+      "name": "WaitForScriptLock",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "LockScript",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "UnlockScript",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "ScriptIsLocked",
+      "tags": ["predicate"],
+      "variants": [{"args": []}]
+    }
+  ],
+  "shortcuts": [
+    {"trigger": "todo", "contents": "// TODO: ${1}"},
+    {"trigger": "ife", "contents": "If(Equal(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Equals"},
+    {"trigger": "ifne", "contents": "If(!Equal(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Not Equals"},
+    {"trigger": "ifl", "contents": "If(Less(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Less"},
+    {"trigger": "ifle", "contents": "If(LessOrEqual(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Less Or Equal"},
+    {"trigger": "ifg", "contents": "If(Greater(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Greater"},
+    {"trigger": "ifge", "contents": "If(GreaterOrEqual(${1:value1}, ${2:value2}))\n{\n\t${3:body}\n}", "annotation": "If Greater Or Equal"},
+    {"trigger": "wht", "contents": "While(Equal(1, 1))\n{\n\t${1:body}\n}", "annotation": "While True"},
+    {"trigger": "inc", "contents": "Add(\"&${1}\", 1);", "annotation": "Increment"},
+    {"trigger": "main", "contents": "Main(${1:args})\n{\n\t${2:body}\n}"}
+  ]
+}
