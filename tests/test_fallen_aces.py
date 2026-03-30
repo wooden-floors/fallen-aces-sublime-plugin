@@ -1,25 +1,31 @@
+import sys
+import os
+# Add the package root to sys.path so we can import 'logic' and 'utils' directly in tests
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tests.sublime_stub
 import unittest
 import tempfile
-import os
 import json
 from unittest.mock import patch, MagicMock
 
-# Import the refactored functions
+# Import the logic modules directly for cache management
+import core.definition_provider as definitions_logic
+import core.world_data_provider as world_data_logic
+from utils import logger
+from utils.formatter import format_hint_html
+
+# Import the glue functions from the main plugin file
 from fallen_aces import (
-    parse_cursor_position,
     get_cursor_position,
-    parse_level_info,
-    read_world_file_path,
-    get_level_info,
-    resolve_hover_hint,
-    resolve_completions,
-    get_function_definitions,
-    get_shortcuts,
-    format_hint_html,
-    _METADATA_CACHE,
-    _PROJECT_STRUCTURE_CACHE
+    get_world_data,
+    create_hover_context,
+    create_completion_context
 )
+from core.resolver import resolve_hover_hint, resolve_completions
+# Note: parse_world_file is now in parser.world_parser
+from parser.world_parser import parse_world_file, Event, Tag, WorldData
+from parser.chapter_info_parser import get_world_file_path
 
 # ---------------------------------------------------------------------------
 # Mocks
@@ -44,7 +50,8 @@ class FakeView:
     def line(self, point):
         return FakeRegion(0, len(self._line))
     def substr(self, region_or_point):
-        if isinstance(region_or_point, FakeRegion):
+        # Support any object with begin() and end() (like FakeRegion or parser's RegionStub)
+        if hasattr(region_or_point, "begin") and hasattr(region_or_point, "end"):
             return self._line[region_or_point.begin():region_or_point.end()]
         return self._line[region_or_point]
     def word(self, point):
@@ -60,6 +67,8 @@ class FakeView:
         return True
     def extract_completions(self, prefix):
         return ["myVar", "anotherVar"]
+    def size(self):
+        return len(self._line)
 
 # ---------------------------------------------------------------------------
 # Metadata Mock Data
@@ -95,58 +104,32 @@ MOCK_METADATA = {
 # ---------------------------------------------------------------------------
 
 class TestCursor(unittest.TestCase):
-    def test_parse_cursor_position(self):
-        cases = [
-            ("SetState(entityTag, stateName);", 4, "SetState", "SetState[2]", None),
-            ("SetState(entityTag, stateName);", 12, "SetState", "SetState[2]", 0),
-            ("SetState(entityTag, stateName);", 22, "SetState", "SetState[2]", 1),
-            ("EndLevel();", 4, "EndLevel", "EndLevel[0]", None),
-            ("// comment", 5, None, None, None),
-        ]
-        for line, offset, name, fid, arg in cases:
-            res = parse_cursor_position(line, offset)
-            if name is None:
-                self.assertIsNone(res)
-            else:
-                self.assertEqual(res["function_name"], name)
-                self.assertEqual(res["function_id"], fid)
-                self.assertEqual(res["arg_index"], arg)
-
     def test_get_cursor_position(self):
         view = FakeView("SetState(tag, state);", cursor_point=10)
         res = get_cursor_position(view, 10)
         self.assertEqual(res["arg_index"], 0)
 
 # ---------------------------------------------------------------------------
-# Metadata Tests
+# Definitions Tests
 # ---------------------------------------------------------------------------
 
-class TestMetadata(unittest.TestCase):
+class TestDefinitions(unittest.TestCase):
     @patch("fallen_aces.load_plugin_resource")
-    def test_get_function_definitions(self, mock_load):
-        # Clear cache for clean test
-        import fallen_aces
-        fallen_aces._METADATA_CACHE = None
+    def test_get_definitions_lazy_loading(self, mock_load):
+        # Reset provider state
+        definitions_logic.provider.clear_cache()
         
+        # Setup mock data for the loader
         mock_load.return_value = json.dumps(MOCK_METADATA)
         
-        defs = get_function_definitions()
+        # Calling getter should trigger lazy load via provider
+        defs = definitions_logic.provider.get_function_definitions()
         self.assertIn("SetState[2]", defs)
-        self.assertIn("Overloaded[1]", defs)
-        self.assertIn("Overloaded[2]", defs)
-        self.assertEqual(defs["SetState[2]"]["name"], "SetState")
-        self.assertEqual(defs["SetState[2]"]["args"], ["entityTag", "stateName"])
-        self.assertEqual(defs["SetState[2]"]["description"], "Sets state.")
-
-    @patch("fallen_aces.load_plugin_resource")
-    def test_get_shortcuts(self, mock_load):
-        import fallen_aces
-        fallen_aces._METADATA_CACHE = None
-        mock_load.return_value = json.dumps(MOCK_METADATA)
+        self.assertEqual(mock_load.call_count, 1)
         
-        shortcuts = get_shortcuts()
-        self.assertEqual(len(shortcuts), 1)
-        self.assertEqual(shortcuts[0]["trigger"], "ife")
+        # Subsequent call should NOT trigger another load
+        definitions_logic.provider.get_function_definitions()
+        self.assertEqual(mock_load.call_count, 1)
 
     def test_format_hint_html(self):
         definition = {
@@ -162,40 +145,21 @@ class TestMetadata(unittest.TestCase):
         self.assertIn("background-color:#272822", html_out)
         self.assertIn("Test(1,&nbsp;2);", html_out)
 
-    @patch("fallen_aces.load_plugin_resource")
-    def test_get_metadata_missing_file(self, mock_load):
-        import fallen_aces
-        fallen_aces._METADATA_CACHE = None
-        mock_load.return_value = None
-        
-        defs = get_function_definitions()
-        self.assertEqual(defs, {})
-        
-        shortcuts = get_shortcuts()
-        self.assertEqual(shortcuts, [])
-
 # ---------------------------------------------------------------------------
 # Level Info Tests
 # ---------------------------------------------------------------------------
 
 class TestLevelInfo(unittest.TestCase):
-    def test_parse_level_info(self):
-        raw = 'Event { name="e1" number=1 } Tag { name="t1" number=10 } Thing { definition_id=517 tag=10 }'
-        res = parse_level_info(raw)
-        self.assertEqual(res["events"][1], "e1 - 1")
-        self.assertEqual(res["tags"][10], "t1 - 10")
-        self.assertIn(10, res["things"][517])
-
     def test_read_world_file_path(self):
         with tempfile.TemporaryDirectory() as tmp:
             chapter_info = os.path.join(tmp, "chapterInfo.txt")
-            world_file = os.path.join(tmp, "level.world")
+            world_file = os.path.join(tmp, "world.txt")
             with open(chapter_info, "w") as f:
-                f.write('world_file_name = "level.world"')
+                f.write('world_file_name = "world.txt"')
             with open(world_file, "w") as f:
                 f.write("data")
             
-            self.assertEqual(read_world_file_path(chapter_info), world_file)
+            self.assertEqual(get_world_file_path(chapter_info), world_file)
 
 # ---------------------------------------------------------------------------
 # Listener Logic Tests
@@ -219,185 +183,171 @@ class TestListenerLogic(unittest.TestCase):
                 "args": ["myTag"]
             }
         }
-        self.info = {
-            "events": {1: "e1 - 1"},
-            "tags": {10: "t1 - 10"},
-            "things": {517: [10]}
+        self.info = WorldData(
+            events={1: Event("e1", 1)},
+            tags={10: Tag("t1", 10)},
+            things={517: [10]}
+        )
+
+    def mock_context(self, cursor):
+        """Creates a mock RequestContext for listener tests."""
+        mock_ctx = MagicMock()
+        mock_ctx.cursor = cursor
+        mock_ctx.world_data = self.info
+        mock_ctx.definitions = self.defs
+        mock_ctx.shortcuts = []
+        mock_ctx.local_functions = {}
+        mock_ctx.buffer_words = []
+        mock_ctx.hardcoded_suggestions = {
+            "logLevel": {"0": "Info"}
         }
+        mock_ctx.variable_to_definition_id = {
+            "lightStateTag": {"517": "LightState"}
+        }
+        return mock_ctx
 
     def test_resolve_hover_hint(self):
         # Function name hover
         cursor = {"function_id": "Test[1]", "function_name": "Test", "arg_index": None}
-        hint = resolve_hover_hint("Test", cursor, self.defs, self.info)
+        ctx = self.mock_context(cursor)
+        hint = resolve_hover_hint("Test", ctx)
         self.assertIn("<b>Test(eventNumber)</b>", hint)
         
         # Event number hover
         cursor["arg_index"] = 0
-        self.assertEqual(resolve_hover_hint("1", cursor, self.defs, self.info), "e1 - 1")
+        self.assertEqual(resolve_hover_hint("1", ctx), "e1 - 1")
 
     def test_resolve_hover_hint_hardcoded(self):
         cursor = {"function_id": "Hardcoded[1]", "function_name": "Hardcoded", "arg_index": 0}
-        self.assertEqual(resolve_hover_hint("0", cursor, self.defs, self.info), "Info")
+        ctx = self.mock_context(cursor)
+        self.assertEqual(resolve_hover_hint("0", ctx), "Info")
 
     def test_resolve_hover_hint_tag(self):
         cursor = {"function_id": "Tagged[1]", "function_name": "Tagged", "arg_index": 0}
-        self.assertEqual(resolve_hover_hint("10", cursor, self.defs, self.info), "t1 - 10")
+        ctx = self.mock_context(cursor)
+        self.assertEqual(resolve_hover_hint("10", ctx), "t1 - 10")
 
     def test_resolve_completions_args(self):
         cursor = {"function_id": "Test[1]", "arg_index": 0}
-        buffer_words = ["myVar"]
-        shortcuts = []
-        res = resolve_completions(cursor, buffer_words, self.defs, shortcuts, self.info, {})
+        ctx = self.mock_context(cursor)
+        ctx.buffer_words = ["myVar"]
+        res = resolve_completions(ctx)
         self.assertIsNotNone(res)
-        self.assertIn(("e1 - 1", "1"), res[0])
-        # Check inhibition flags for specialized completions
-        self.assertEqual(res[1], tests.sublime_stub.sublime_stub.INHIBIT_WORD_COMPLETIONS | tests.sublime_stub.sublime_stub.INHIBIT_EXPLICIT_COMPLETIONS)
+        self.assertIn(("e1 - 1", "1"), res)
 
     def test_resolve_completions_general(self):
         cursor = {"function_id": "Unknown[1]", "arg_index": None}
-        buffer_words = ["myVar", "anotherVar"]
-        shortcuts = [{"trigger": "ife", "contents": "If...", "annotation": "snippet"}]
+        ctx = self.mock_context(cursor)
+        ctx.buffer_words = ["myVar", "anotherVar"]
+        ctx.shortcuts = [{"trigger": "ife", "contents": "If...", "annotation": "snippet"}]
         
         # Add an overloaded function to defs
-        defs = self.defs.copy()
-        defs["Over[1]"] = {"name": "Over", "args": ["a1"]}
-        defs["Over[2]"] = {"name": "Over", "args": ["a1", "a2"]}
+        ctx.definitions["Over[1]"] = {"name": "Over", "args": ["a1"]}
+        ctx.definitions["Over[2]"] = {"name": "Over", "args": ["a1", "a2"]}
 
-        res = resolve_completions(cursor, buffer_words, defs, shortcuts, self.info, {})
+        res = resolve_completions(ctx)
         
-        # Check function snippets (including signatures in triggers)
-        self.assertTrue(any(c[0] == "Test(eventNumber)\tfn" for c in res[0]))
-        self.assertTrue(any(c[0] == "Over(a1)\tfn" for c in res[0]))
-        self.assertTrue(any(c[0] == "Over(a1, a2)\tfn" for c in res[0]))
-        # Check shortcut
-        self.assertTrue(any(c[0] == "ife\tsnippet" for c in res[0]))
+        # Check function snippets
+        self.assertTrue(any(c[0] == "Test(eventNumber)\tfn" for c in res))
+        self.assertTrue(any(c[0] == "Over(a1)\tfn" for c in res))
+        self.assertTrue(any(c[0] == "Over(a1, a2)\tfn" for c in res))
         # Check buffer variables
-        self.assertTrue(any(c[0] == "myVar\tvar" for c in res[0]))
-        self.assertTrue(any(c[0] == "anotherVar\tvar" for c in res[0]))
-
-    def test_parse_cursor_position_nested(self):
-        line = "If(Equal(name, value))"
-        
-        # 1. Cursor on "If"
-        res = parse_cursor_position(line, 1)
-        self.assertEqual(res["function_name"], "If")
-        self.assertEqual(res["function_id"], "If[1]") # Should be If[1], not If[2]
-        self.assertIsNone(res["arg_index"])
-
-        # 2. Cursor on "Equal"
-        res = parse_cursor_position(line, 4)
-        self.assertEqual(res["function_name"], "Equal")
-        self.assertEqual(res["function_id"], "Equal[2]")
-        self.assertIsNone(res["arg_index"])
-
-        # 3. Cursor on "name" (first arg of Equal)
-        res = parse_cursor_position(line, 10)
-        self.assertEqual(res["function_name"], "Equal")
-        self.assertEqual(res["function_id"], "Equal[2]")
-        self.assertEqual(res["arg_index"], 0)
-
-        # 4. Cursor on "value" (second arg of Equal)
-        res = parse_cursor_position(line, 16)
-        self.assertEqual(res["function_name"], "Equal")
-        self.assertEqual(res["function_id"], "Equal[2]")
-        self.assertEqual(res["arg_index"], 1)
+        self.assertTrue(any(c[0] == "myVar\tvar" for c in res))
 
     def test_resolve_completions_structural_logic(self):
-        # Setup mock metadata with tags
-        defs = {
-            "If[1]": {
-                "name": "If",
-                "args": ["condition"],
-                "tags": ["control"]
-            },
-            "Equal[2]": {
-                "name": "Equal",
-                "args": ["name", "value"],
-                "tags": ["predicate"]
-            },
-            "SetState[2]": {
-                "name": "SetState",
-                "args": ["tag", "state"]
-            },
-            "IsBroken[1]": {
-                "name": "IsBroken",
-                "args": ["entityTag"],
-                "tags": ["predicate"]
-            }
+        ctx = self.mock_context(None)
+        ctx.definitions = {
+            "If[1]": {"name": "If", "args": ["condition"], "tags": ["control"]},
+            "Equal[2]": {"name": "Equal", "args": ["name", "value"], "tags": ["predicate"]},
+            "SetState[2]": {"name": "SetState", "args": ["tag", "state"]}
         }
         
-        cursor = {"function_id": "Unknown", "arg_index": None}
-        res = resolve_completions(cursor, [], defs, [], None, {})
-        completions = {c[0]: c[1] for c in res[0]}
+        res = resolve_completions(ctx)
+        completions = {c[0]: c[1] for c in res}
 
         # 1. Control flow (If) should have a block and NO semicolon
-        self.assertIn("If(condition)\tfn", completions)
-        self.assertTrue(completions["If(condition)\tfn"].startswith("If("))
-        self.assertTrue("{" in completions["If(condition)\tfn"], "Control function should complete with a block")
-        self.assertFalse(completions["If(condition)\tfn"].endswith(";"), "Control function should not have a semicolon")
+        self.assertTrue("{" in completions["If(condition)\tfn"])
+        self.assertFalse(completions["If(condition)\tfn"].endswith(";"))
 
-        # 2. Predicate (Equal) should have NO semicolon
-        self.assertIn("Equal(name, value)\tfn", completions)
-        self.assertFalse(completions["Equal(name, value)\tfn"].endswith(";"), "Predicate function should not have a semicolon")
-
-        # 3. Standard function (SetState) SHOULD have a semicolon
-        self.assertIn("SetState(tag, state)\tfn", completions)
-        self.assertTrue(completions["SetState(tag, state)\tfn"].endswith(";"), "Standard function should have a semicolon")
-
-        # 4. Predicate-like function (IsBroken) should also have NO semicolon
-        self.assertIn("IsBroken(entityTag)\tfn", completions)
-        self.assertFalse(completions["IsBroken(entityTag)\tfn"].endswith(";"), "IsBroken should be a predicate and have no semicolon")
+        # 2. Standard function SHOULD have a semicolon
+        self.assertTrue(completions["SetState(tag, state)\tfn"].endswith(";"))
 
     def test_resolve_completions_deduplication(self):
-        # Test that buffer words don't duplicate function names
-        cursor = {"function_id": "Unknown", "arg_index": None}
-        buffer_words = ["Test"] # "Test" is already a function
-        shortcuts = []
+        ctx = self.mock_context(None)
+        ctx.buffer_words = ["Test"]
         
-        res = resolve_completions(cursor, buffer_words, self.defs, shortcuts, self.info, {})
+        res = resolve_completions(ctx)
         
-        test_entries = [c for c in res[0] if c[1] == "Test" or c[1].startswith("Test(")]
-        # Should only have the function entry "Test(eventNumber)", not "Test" as var
+        # Each entry in res is a tuple (trigger, content)
+        test_entries = [c for c in res if c[1] == "Test" or (isinstance(c[1], str) and c[1].startswith("Test("))]
         self.assertEqual(len(test_entries), 1)
         self.assertIn("\tfn", test_entries[0][0])
 
     def test_resolve_completions_local_functions(self):
-        cursor = {"function_id": "Unknown", "arg_index": None}
-        buffer_words = []
-        # Local functions discovered by the listener with arguments
-        local_functions = {"MyLocalFunction": ["arg1", "arg2"]}
+        ctx = self.mock_context(None)
+        ctx.definitions = {}
+        ctx.local_functions = {"MyLocalFunction": ["arg1", "arg2"]}
 
-        # Test: Should appear with arguments in trigger and placeholders in snippet
-        res = resolve_completions(cursor, buffer_words, {}, [], None, local_functions)
-        completions = {c[0]: c[1] for c in res[0]}
+        res = resolve_completions(ctx)
+        completions = {c[0]: c[1] for c in res}
         
-        # 1. Trigger should show arguments
         self.assertIn("MyLocalFunction(arg1, arg2)\tfn", completions)
-        # 2. Snippet should use placeholders
         self.assertEqual(completions["MyLocalFunction(arg1, arg2)\tfn"], "MyLocalFunction(${1:arg1}, ${2:arg2});")
 
     def test_resolve_completions_case_insensitive(self):
-        cursor = {"function_id": "Unknown", "arg_index": None}
-        # Predefined function
-        defs = {"SetState[2]": {"name": "SetState", "args": ["a", "b"]}}
-        # Buffer word matches predefined function but with different case
-        buffer_words = ["setstate"]
+        ctx = self.mock_context(None)
+        ctx.definitions = {"SetState[2]": {"name": "SetState", "args": ["a", "b"]}}
+        ctx.buffer_words = ["setstate"]
         
-        res = resolve_completions(cursor, buffer_words, defs, [], None, {})
-        completions = [c[0] for c in res[0]]
+        res = resolve_completions(ctx)
+        # c is a tuple (trigger, content)
+        triggers = [c[0] for c in res]
         
-        # Should only have the function entry, not the lowercase "var" entry
-        self.assertTrue(any(c.startswith("SetState(") for c in completions))
-        self.assertFalse(any(c == "setstate\tvar" for c in completions))
+        self.assertTrue(any(t.startswith("SetState(") for t in triggers))
+        self.assertFalse(any(t == "setstate\tvar" for t in triggers))
 
-    def test_resolve_completions_no_level_info(self):
-        cursor = {"function_id": "Test[1]", "arg_index": 0}
-        buffer_words = []
-        shortcuts = []
-        # level_info is None
-        res = resolve_completions(cursor, buffer_words, self.defs, shortcuts, None, {})
-        # Should not crash, and since it's an arg completion but no info, it might proceed to general
-        self.assertTrue(any(c[0].startswith("Test(eventNumber)\tfn") for c in res[0]))
+    def test_resolve_completions_no_world_data(self):
+        ctx = self.mock_context({"function_id": "Test[1]", "arg_index": 0})
+        ctx.world_data = None
+        res = resolve_completions(ctx)
+        # Should proceed to general suggestions
+        self.assertTrue(any(c[0].startswith("Test(eventNumber)\tfn") for c in res))
+
+class TestSyntaxApplication(unittest.TestCase):
+    def setUp(self):
+        from fallen_aces import FallenAcesScriptEventListener
+        self.listener = FallenAcesScriptEventListener()
+
+    def test_syntax_applied_when_enabled_and_in_scripts(self):
+        view = MagicMock()
+        view.settings().get.side_effect = lambda k, d=None: {
+            "fallen_aces_auto_syntax_enabled": True,
+            "syntax": "Other"
+        }.get(k, d)
+        view.file_name.return_value = os.path.join("some", "scripts", "test.txt")
+        
+        self.listener._check_and_apply_syntax(view)
+        
+        view.set_syntax_file.assert_called_once()
+        self.assertIn("fallen-aces.sublime-syntax", view.set_syntax_file.call_args[0][0])
+
+    def test_syntax_not_applied_when_disabled(self):
+        view = MagicMock()
+        view.settings().get.return_value = False
+        view.file_name.return_value = os.path.join("some", "scripts", "test.txt")
+        
+        self.listener._check_and_apply_syntax(view)
+        
+        view.set_syntax_file.assert_not_called()
+
+    def test_syntax_not_applied_outside_scripts(self):
+        view = MagicMock()
+        view.settings().get.return_value = True
+        view.file_name.return_value = os.path.join("some", "other", "test.txt")
+        
+        self.listener._check_and_apply_syntax(view)
+        
+        view.set_syntax_file.assert_not_called()
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,7 +3,6 @@
 name: Fallen Aces Script
 file_extensions:
   - txt
-  - fa
 scope: source.fallen-aces
 contexts:
   main:
