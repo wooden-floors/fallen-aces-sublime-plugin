@@ -1,10 +1,10 @@
 # core/definition_provider.py
 try:
-    from ..utils import logger
-    from ..parser import definition_parser
+    from ..fa_utils import logger
+    from ..fa_parser import definition_parser
 except (ImportError, ValueError):
-    from utils import logger
-    from parser import definition_parser
+    from fa_utils import logger
+    from fa_parser import definition_parser
 
 class DefinitionProvider:
     """

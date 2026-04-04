@@ -1,13 +1,13 @@
 # core/world_data_provider.py
 import os
 try:
-    from ..utils import logger
-    from ..parser import world_parser
-    from ..parser import chapter_info_parser
+    from ..fa_utils import logger
+    from ..fa_parser import world_parser
+    from ..fa_parser import chapter_info_parser
 except (ImportError, ValueError):
-    from utils import logger
-    from parser import world_parser
-    from parser import chapter_info_parser
+    from fa_utils import logger
+    from fa_parser import world_parser
+    from fa_parser import chapter_info_parser
 
 class WorldDataProvider:
     """

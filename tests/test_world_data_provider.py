@@ -8,8 +8,8 @@ import time
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.world_data_provider import WorldDataProvider
-from parser.world_parser import WorldData
+from fa_core.world_data_provider import WorldDataProvider
+from fa_parser.world_parser import WorldData
 
 class TestWorldDataProvider(unittest.TestCase):
     def setUp(self):

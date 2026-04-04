@@ -7,7 +7,7 @@ import json
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from parser.definition_parser import parse_definitions
+from fa_parser.definition_parser import parse_definitions
 
 class TestDefinitionParser(unittest.TestCase):
     def test_parse_definitions_exhaustive(self):

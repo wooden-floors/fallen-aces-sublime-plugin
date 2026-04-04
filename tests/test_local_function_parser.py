@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from parser.local_function_parser import discover_local_functions
+from fa_parser.local_function_parser import discover_local_functions
 from tests.test_fallen_aces import FakeView, FakeRegion
 
 class TestLocalFunctionParser(unittest.TestCase):

@@ -1,10 +1,10 @@
-# parser/cursor_parser.py
+# fa_parser/cursor_parser.py
 import collections
 
 try:
-    from ..utils import logger
+    from ..fa_utils import logger
 except (ImportError, ValueError):
-    from utils import logger
+    from fa_utils import logger
 
 # Token representation for clearer structural analysis
 Token = collections.namedtuple("Token", ["type", "value", "start", "end"])

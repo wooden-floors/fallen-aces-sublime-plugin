@@ -28,7 +28,7 @@ If you previously installed this plugin by copying files directly into your `Pac
    ```text
    FallenAces/
    ├── core/
-   ├── parser/
+   ├── fa_parser/
    ├── utils/
    ├── fallen_aces.py
    ├── fallen-aces-data.json

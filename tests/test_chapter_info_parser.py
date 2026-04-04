@@ -7,7 +7,7 @@ import tempfile
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from parser.chapter_info_parser import get_world_file_path
+from fa_parser.chapter_info_parser import get_world_file_path
 
 class TestChapterInfoParser(unittest.TestCase):
     def setUp(self):

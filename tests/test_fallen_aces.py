@@ -10,10 +10,10 @@ import json
 from unittest.mock import patch, MagicMock
 
 # Import the logic modules directly for cache management
-import core.definition_provider as definitions_logic
-import core.world_data_provider as world_data_logic
-from utils import logger
-from utils.formatter import format_hint_html
+import fa_core.definition_provider as definitions_logic
+import fa_core.world_data_provider as world_data_logic
+from fa_utils import logger
+from fa_utils.formatter import format_hint_html
 
 # Import the glue functions from the main plugin file
 from fallen_aces import (
@@ -22,10 +22,10 @@ from fallen_aces import (
     create_hover_context,
     create_completion_context
 )
-from core.resolver import resolve_hover_hint, resolve_completions
-# Note: parse_world_file is now in parser.world_parser
-from parser.world_parser import parse_world_file, Event, Tag, WorldData
-from parser.chapter_info_parser import get_world_file_path
+from fa_core.resolver import resolve_hover_hint, resolve_completions
+# Note: parse_world_file is now in fa_parser.world_parser
+from fa_parser.world_parser import parse_world_file, Event, Tag, WorldData
+from fa_parser.chapter_info_parser import get_world_file_path
 
 # ---------------------------------------------------------------------------
 # Mocks

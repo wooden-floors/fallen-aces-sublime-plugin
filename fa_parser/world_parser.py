@@ -2,9 +2,9 @@ import re
 from collections import namedtuple
 
 try:
-    from ..utils import logger
+    from ..fa_utils import logger
 except (ImportError, ValueError):
-    from utils import logger
+    from fa_utils import logger
 
 # --- Data Structures ---
 
@@ -22,7 +22,7 @@ class WorldData:
         self.things = things  # {definition_id: [tag, ...]}
 
 
-# --- Parser Logic ---
+# --- fa_parser Logic ---
 
 RE_BLOCKS = {
     "event": re.compile(r'Event\s*\{(.*?)\}', re.DOTALL),

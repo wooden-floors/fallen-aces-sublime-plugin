@@ -1,11 +1,11 @@
-# parser/definition_parser.py
+# fa_parser/definition_parser.py
 import json
 import collections
 
 try:
-    from ..utils import logger
+    from ..fa_utils import logger
 except (ImportError, ValueError):
-    from utils import logger
+    from fa_utils import logger
 
 # Data structures for script definitions
 # FunctionVariant represents a specific overload of a function

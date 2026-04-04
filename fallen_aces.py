@@ -3,23 +3,23 @@ import sublime_plugin
 import os
 
 try:
-    from .utils import logger
-    from .utils.formatter import format_hint_html
-    from .parser import cursor_parser
-    from .parser import world_parser
-    from .parser import local_function_parser
-    from .core import definition_provider
-    from .core import world_data_provider
-    from .core import resolver
+    from .fa_utils import logger
+    from .fa_utils.formatter import format_hint_html
+    from .fa_parser import cursor_parser
+    from .fa_parser import world_parser
+    from .fa_parser import local_function_parser
+    from .fa_core import definition_provider
+    from .fa_core import world_data_provider
+    from .fa_core import resolver
 except (ImportError, ValueError):
-    from utils import logger
-    from utils.formatter import format_hint_html
-    from parser import cursor_parser
-    from parser import world_parser
-    from parser import local_function_parser
-    from core import definition_provider
-    from core import world_data_provider
-    from core import resolver
+    from fa_utils import logger
+    from fa_utils.formatter import format_hint_html
+    from fa_parser import cursor_parser
+    from fa_parser import world_parser
+    from fa_parser import local_function_parser
+    from fa_core import definition_provider
+    from fa_core import world_data_provider
+    from fa_core import resolver
 
 # Dynamically detect our package name (handles renames and zipped packages)
 PACKAGE_NAME = os.path.basename(os.path.dirname(__file__)).replace(".sublime-package", "")

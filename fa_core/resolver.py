@@ -2,11 +2,11 @@
 import collections
 
 try:
-    from ..utils import logger
-    from ..utils.formatter import format_hint_html
+    from ..fa_utils import logger
+    from ..fa_utils.formatter import format_hint_html
 except (ImportError, ValueError):
-    from utils import logger
-    from utils.formatter import format_hint_html
+    from fa_utils import logger
+    from fa_utils.formatter import format_hint_html
 
 # HoverContext encapsulates data needed to resolve a hover hint.
 HoverContext = collections.namedtuple("HoverContext", [

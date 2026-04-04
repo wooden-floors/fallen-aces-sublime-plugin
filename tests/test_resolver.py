@@ -6,8 +6,8 @@ import unittest
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.resolver import resolve_hover_hint, resolve_completions, HoverContext, CompletionContext
-from parser.world_parser import WorldData, Event, Tag
+from fa_core.resolver import resolve_hover_hint, resolve_completions, HoverContext, CompletionContext
+from fa_parser.world_parser import WorldData, Event, Tag
 
 class TestResolver(unittest.TestCase):
     def setUp(self):

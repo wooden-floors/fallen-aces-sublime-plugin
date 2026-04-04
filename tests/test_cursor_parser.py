@@ -6,7 +6,7 @@ import unittest
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from parser.cursor_parser import parse_cursor_position, tokenize
+from fa_parser.cursor_parser import parse_cursor_position, tokenize
 
 class TestCursorParser(unittest.TestCase):
     def test_tokenize_basic(self):

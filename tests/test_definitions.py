@@ -7,7 +7,7 @@ import json
 # Add the package root to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.definition_provider import DefinitionProvider, provider as global_provider
+from fa_core.definition_provider import DefinitionProvider, provider as global_provider
 
 class TestDefinitions(unittest.TestCase):
     def setUp(self):

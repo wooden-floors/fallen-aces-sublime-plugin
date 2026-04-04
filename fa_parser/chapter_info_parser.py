@@ -1,4 +1,4 @@
-# parser/chapter_info_parser.py
+# fa_parser/chapter_info_parser.py
 import re
 import os
 
