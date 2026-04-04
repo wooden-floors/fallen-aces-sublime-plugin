@@ -49,21 +49,21 @@ def parse_world_file(raw):
     for block in RE_BLOCKS["event"].findall(raw):
         name = _extract_field(block, "name")
         num = _extract_field(block, "number", int)
-        if name and num is not None:
+        if name and num is not None and num != 0:
             events[num] = Event(name, num)
 
     tags = {}
     for block in RE_BLOCKS["tag"].findall(raw):
         name = _extract_field(block, "name")
         num = _extract_field(block, "number", int)
-        if name and num is not None:
+        if name and num is not None and num != 0:
             tags[num] = Tag(name, num)
 
     things = {}
     for block in RE_BLOCKS["thing"].findall(raw):
         definition_id = _extract_field(block, "definition_id", int)
         tag = _extract_field(block, "tag", int)
-        if definition_id is not None and tag is not None:
+        if definition_id is not None and tag is not None and tag != 0:
             things.setdefault(definition_id, []).append(tag)
 
     result = WorldData(events, tags, things)

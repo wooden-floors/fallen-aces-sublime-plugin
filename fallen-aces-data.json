@@ -164,8 +164,16 @@
     {
       "name": "ShowNotification",
       "variants": [
-        {"args": ["messageOrVariableName"]},
-        {"args": ["messageOrVariableName", "notificationType"]}
+        {
+          "args": ["messageOrVariableName"],
+          "description": "Show message notification on the screen.",
+          "usage": "ShowNotification(\"Text\");"
+        },
+        {
+          "args": ["messageOrVariableName", "notificationType"],
+          "description": "Show message notification on the screen with a specific type.",
+          "usage": "ShowNotification(\"Text\", 0); // Standard\nShowNotification(\"Text\", 1); // Error"
+        }
       ]
     },
     {
@@ -277,7 +285,7 @@
     },
     {
       "name": "TriggerEventOnEvent",
-      "variants": [{"args": ["eventNumber", "eventNumber"]}]
+      "variants": [{"args": ["eventName", "eventNumber"]}]
     },
     {
       "name": "EventTriggered",
@@ -367,7 +375,14 @@
     },
     {
       "name": "Attack",
-      "variants": [{"args": ["entityTag", "targetId", "mode"]}]
+      "variants": [
+        {
+          "args": ["attackerTag", "victimTag"]
+        },
+        {
+          "args": ["attackerTag", "victimTag", "waitForVictory"]
+        }
+      ]
     },
     {
       "name": "FollowWaypointRoute",
@@ -434,7 +449,7 @@
     },
     {
       "name": "SwitchPressed",
-      "variants": [{"args": ["switchName"]}]
+      "variants": [{"args": ["switchTag"]}]
     },
     {
       "name": "Teleport",
@@ -483,6 +498,9 @@
     "moveStateTag": {
       "521": "MoveState"
     },
+    "doorTag": {
+      "513": "Door"
+    },
     "enemyTag": {
       "10001": "Goon",
       "10002": "Pipeguy",
@@ -490,6 +508,8 @@
       "10004": "Malone",
       "10005": "GoonThug",
       "10006": "PipeguyWiseguy",
+      "10007": "CivilanMale",
+      "10008": "CivilianMerchant",
       "10009": "MolotovMook",
       "10011": "SnipingMook",
       "10012": "ArmedMook",
@@ -499,6 +519,10 @@
     }
   },
   "hardcoded_suggestions": {
+    "notificationType": {
+      "0": "Standard",
+      "1": "Error"
+    },
     "disturbanceTypeName": {
       "SomethingTurnedOn": "SomethingTurnedOn",
       "SomethingTurnedOff": "SomethingTurnedOff"

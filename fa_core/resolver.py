@@ -42,9 +42,16 @@ def resolve_hover_hint(word, context):
     function_name = context.cursor["function_name"]
 
     # 1. Check if hovering on a function name
-    if function_name == word and function_id in context.definitions:
-        logger.log("Resolver - hover on function name, return hint")
-        return format_hint_html(context.definitions[function_id])
+    if function_name == word:
+        if function_id in context.definitions:
+            logger.log("Resolver - hover on function name, return hint")
+            return format_hint_html(context.definitions[function_id])
+        
+        # Fallback for empty calls (e.g. EndLevel[1] -> EndLevel[0])
+        fallback_id = "{}[0]".format(function_name)
+        if fallback_id in context.definitions:
+            logger.log("Resolver - hover on function name (fallback to [0]), return hint")
+            return format_hint_html(context.definitions[fallback_id])
 
     # 2. Check if hovering on a digit (argument value)
     if word.isdigit():
@@ -102,8 +109,18 @@ def resolve_completions(context):
         function_id = context.cursor["function_id"]
         arg_index = context.cursor["arg_index"]
 
-        if function_id in context.definitions:
-            arg_name = context.definitions[function_id]["args"][arg_index]
+        definition = context.definitions.get(function_id)
+        if not definition:
+            # Fallback: find any variant that has enough arguments
+            function_name = context.cursor["function_name"]
+            for def_id, d in context.definitions.items():
+                if d["name"] == function_name and len(d["args"]) > arg_index:
+                    definition = d
+                    logger.log("Resolver - found fallback variant {} for arg {}".format(def_id, arg_index))
+                    break
+
+        if definition:
+            arg_name = definition["args"][arg_index]
             logger.log("Resolver - argument name is {}".format(arg_name))
             completions = []
 

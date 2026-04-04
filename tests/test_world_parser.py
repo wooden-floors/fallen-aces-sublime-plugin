@@ -132,5 +132,31 @@ class TestWorldParser(unittest.TestCase):
         self.assertIsNone(parse_world_file(""))
         self.assertIsNone(parse_world_file(None))
 
+    def test_parse_world_file_filters_invalid_data(self):
+        """Should filter out events, tags, and things with number/tag 0."""
+        raw = """
+        Event { name = "None" number = 0 }
+        Event { name = "Valid" number = 1 }
+        Tag { name = "None" number = 0 }
+        Tag { name = "Valid" number = 10 }
+        Thing { definition_id = 518 tag = 0 }
+        Thing { definition_id = 518 tag = 10 }
+        """
+        data = parse_world_file(raw)
+        
+        # Verify Event 0 is filtered
+        self.assertNotIn(0, data.events)
+        self.assertIn(1, data.events)
+        
+        # Verify Tag 0 is filtered
+        self.assertNotIn(0, data.tags)
+        self.assertIn(10, data.tags)
+        
+        # Verify Thing with tag 0 is filtered
+        self.assertIn(518, data.things)
+        self.assertNotIn(0, data.things[518])
+        self.assertIn(10, data.things[518])
+        self.assertEqual(len(data.things[518]), 1)
+
 if __name__ == "__main__":
     unittest.main()

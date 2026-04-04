@@ -118,8 +118,8 @@ def parse_cursor_position(line, cursor_offset):
     stack = 0
     found_cursor = False
     
-    # The cursor is "on the name" if it is at or before the opening '('
-    is_on_name = cursor_offset <= active["args_start"]
+    # The cursor is "on the name" if it is before the opening '('
+    is_on_name = cursor_offset < active["args_start"]
     
     for j in range(active["body_idx"], len(tokens)):
         t = tokens[j]
@@ -142,7 +142,7 @@ def parse_cursor_position(line, cursor_offset):
             # Any non-punctuation token at top level means we have at least one arg
             has_content = True
             
-    if has_content:
+    if total_args > 0 or has_content or (not is_on_name and cursor_offset <= active["end"]):
         total_args += 1
         
     result = {

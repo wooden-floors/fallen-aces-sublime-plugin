@@ -27,9 +27,9 @@ If you previously installed this plugin by copying files directly into your `Pac
 3. Copy the entire contents of this repository into that folder, ensuring the following structure is maintained:
    ```text
    FallenAces/
-   ├── core/
+   ├── fa_core/
    ├── fa_parser/
-   ├── utils/
+   ├── fa_utils/
    ├── fallen_aces.py
    ├── fallen-aces-data.json
    ├── fallen-aces.sublime-syntax

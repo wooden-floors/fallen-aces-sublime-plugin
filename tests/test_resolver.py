@@ -92,6 +92,15 @@ class TestResolver(unittest.TestCase):
         hint = resolve_hover_hint("0", ctx)
         self.assertEqual(hint, "Info")
 
+    def test_hover_on_function_name_fallback(self):
+        # Case: parser says [1] (empty call), but only [0] exists
+        self.defs["EndLevel[0]"] = {"name": "EndLevel", "args": []}
+        cursor = {"function_name": "EndLevel", "function_id": "EndLevel[1]", "arg_index": 0}
+        ctx = self.create_hover_context(cursor=cursor)
+        hint = resolve_hover_hint("EndLevel", ctx)
+        self.assertIsNotNone(hint)
+        self.assertIn("<b>EndLevel()</b>", hint)
+
     def test_hover_no_hint(self):
         cursor = {"function_name": "Unknown", "function_id": "Unknown[0]", "arg_index": None}
         ctx = self.create_hover_context(cursor=cursor)
@@ -117,6 +126,14 @@ class TestResolver(unittest.TestCase):
         res = resolve_completions(ctx)
         self.assertIn(("Info", "0"), res)
         self.assertIn(("Warning", "1"), res)
+
+    def test_completions_for_event_number_fallback(self):
+        # Case: parser says [0] (not possible with current parser, but testing resolver robustness), 
+        # but only [1] exists. Or parser says [2] but only [1] exists.
+        cursor = {"function_name": "TriggerEvent", "function_id": "TriggerEvent[2]", "arg_index": 0}
+        ctx = self.create_completion_context(cursor=cursor)
+        res = resolve_completions(ctx)
+        self.assertIn(("MyEvent - 101", "101"), res)
 
     def test_general_completions(self):
         buffer_words = ["myVar"]
