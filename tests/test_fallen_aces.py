@@ -23,7 +23,6 @@ from fallen_aces import (
     create_completion_context
 )
 from fa_core.resolver import resolve_hover_hint, resolve_completions
-# Note: parse_world_file is now in fa_parser.world_parser
 from fa_parser.world_parser import parse_world_file, Event, Tag, WorldData
 from fa_parser.chapter_info_parser import get_world_file_path
 
