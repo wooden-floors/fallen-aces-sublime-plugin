@@ -48,7 +48,7 @@ For the plugin to resolve level-specific tags and events:
 ### 2. Syntax Selection
 Plugin works only wiht `.txt` files that use **Fallen Aces Script** syntax.
 
-To select syntax manually open a script file (`.txt`) and set the syntax to **Fallen Aces Script** via the status bar or **View > Syntax > Fallen Aces Script**.
+To select syntax manually open a script file (`.txt`), set the syntax to **Fallen Aces Script** via the status bar or **View > Syntax > Fallen Aces Script** and save.
 
 To automatically apply **Fallen Aces Script** syntax to every `.txt` file in Scripts folder, open Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and run **Fallen Aces: Toggle Auto Syntax Application** command. This command will also update your project-level settings (`*.sublime-project`):
 ```json

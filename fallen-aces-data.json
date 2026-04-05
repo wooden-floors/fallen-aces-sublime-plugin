@@ -433,7 +433,7 @@
     },
     {
       "name": "Open",
-      "variants": [{"args": ["doorOrObjectTag"]}]
+      "variants": [{"args": ["doorTag"]}]
     },
     {
       "name": "Unlock",
