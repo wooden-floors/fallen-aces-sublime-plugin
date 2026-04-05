@@ -198,7 +198,10 @@ class TestListenerLogic(unittest.TestCase):
         mock_ctx.local_functions = {}
         mock_ctx.buffer_words = []
         mock_ctx.hardcoded_suggestions = {
-            "logLevel": {"0": "Info"}
+            "logLevel": {
+                "type": "int",
+                "options": {"0": "Info"}
+            }
         }
         mock_ctx.variable_to_definition_id = {
             "lightStateTag": {"517": "LightState"}

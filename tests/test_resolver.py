@@ -38,8 +38,11 @@ class TestResolver(unittest.TestCase):
         )
         self.hardcoded_suggestions = {
             "logLevel": {
-                "0": "Info",
-                "1": "Warning"
+                "type": "int",
+                "options": {
+                    "0": "Info",
+                    "1": "Warning"
+                }
             },
             "disturbanceTypeName": {
                 "type": "string",
