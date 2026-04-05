@@ -521,23 +521,35 @@
   },
   "hardcoded_suggestions": {
     "notificationType": {
-      "0": "Standard",
-      "1": "Error"
+      "type": "int",
+      "options": {
+        "0": "Standard",
+        "1": "Error"
+      }
     },
     "disturbanceTypeName": {
-      "SomethingTurnedOn": "SomethingTurnedOn",
-      "SomethingTurnedOff": "SomethingTurnedOff"
+      "type": "string",
+      "options": {
+        "SomethingTurnedOn": "SomethingTurnedOn",
+        "SomethingTurnedOff": "SomethingTurnedOff"
+      }
     },
     "speakThroughRadioSetting": {
-      "0": "DontSpeakThroughRadio",
-      "1": "SpeakThenPutaway",
-      "2": "SpeakButDontPutaway",
-      "3": "SpeakButDontShow"
+      "type": "int",
+      "options": {
+        "0": "DontSpeakThroughRadio",
+        "1": "SpeakThenPutaway",
+        "2": "SpeakButDontPutaway",
+        "3": "SpeakButDontShow"
+      }
     },
     "logLevel": {
-      "0": "Info",
-      "1": "Warning",
-      "2": "Error"
+      "type": "int",
+      "options": {
+        "0": "Info",
+        "1": "Warning",
+        "2": "Error"
+      }
     }
   }
 }

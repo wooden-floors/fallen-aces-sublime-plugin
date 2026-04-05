@@ -176,10 +176,18 @@ def parse_cursor_position(line, cursor_offset):
     if total_args > 0 or has_content or (not is_on_name and cursor_offset <= active["end"]):
         total_args += 1
         
+    # Check if the cursor is inside a string token
+    is_inside_string = False
+    for t in tokens:
+        if t.type == "string" and t.start < cursor_offset <= t.end:
+            is_inside_string = True
+            break
+
     result = {
         "function_id": "{}[{}]".format(active["name"], total_args),
         "function_name": active["name"],
         "arg_index": None if is_on_name else arg_index,
+        "is_string": is_inside_string
     }
 
     

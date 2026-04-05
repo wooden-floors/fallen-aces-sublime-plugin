@@ -25,6 +25,10 @@ class TestResolver(unittest.TestCase):
             "Log[2]": {
                 "name": "Log",
                 "args": ["msg", "logLevel"]
+            },
+            "CreateDisturbance[3]": {
+                "name": "CreateDisturbance",
+                "args": ["disturbanceTypeName", "pos", "target"]
             }
         }
         self.world_data = WorldData(
@@ -36,6 +40,13 @@ class TestResolver(unittest.TestCase):
             "logLevel": {
                 "0": "Info",
                 "1": "Warning"
+            },
+            "disturbanceTypeName": {
+                "type": "string",
+                "options": {
+                    "SomethingOn": "SomethingOn",
+                    "SomethingOff": "SomethingOff"
+                }
             }
         }
         self.variable_to_definition_id = {
@@ -52,7 +63,7 @@ class TestResolver(unittest.TestCase):
             hardcoded_suggestions=self.hardcoded_suggestions
         )
 
-    def create_completion_context(self, cursor=None, buffer_words=None, local_functions=None, shortcuts=None):
+    def create_completion_context(self, cursor=None, buffer_words=None, buffer_strings=None, local_functions=None, shortcuts=None):
         """Helper to create a CompletionContext for testing."""
         return CompletionContext(
             cursor=cursor,
@@ -61,9 +72,24 @@ class TestResolver(unittest.TestCase):
             shortcuts=shortcuts or [],
             local_functions=local_functions or {},
             buffer_words=buffer_words or [],
+            buffer_strings=buffer_strings or [],
             variable_to_definition_id=self.variable_to_definition_id,
             hardcoded_suggestions=self.hardcoded_suggestions
         )
+
+    def test_string_literal_completions(self):
+        # 1. Cursor inside a string
+        cursor = {"function_id": "SetWorldVariable[2]", "function_name": "SetWorldVariable", "arg_index": 0, "is_string": True}
+        buffer_strings = ["my_var_1", "my_var_2"]
+        ctx = self.create_completion_context(cursor=cursor, buffer_strings=buffer_strings)
+
+        completions = resolve_completions(ctx)
+        
+        # Should only contain string literals from the buffer
+        self.assertEqual(len(completions), 2)
+        self.assertEqual(completions[0][1], "my_var_1")
+        self.assertEqual(completions[1][1], "my_var_2")
+        self.assertIn("\tstr", completions[0][0])
 
     # --- resolve_hover_hint Tests ---
 
@@ -148,6 +174,27 @@ class TestResolver(unittest.TestCase):
         self.assertIn("ife\tsnip", triggers)
         self.assertIn("myVar\tvar", triggers)
         self.assertTrue(any(t.startswith("MyFunc(") for t in triggers))
+
+    def test_completions_for_string_hardcoded_suggestions(self):
+        # 1. Outside string - should have quotes
+        cursor = {"function_id": "CreateDisturbance[3]", "arg_index": 0, "is_string": False}
+        ctx = self.create_completion_context(cursor=cursor)
+        res = resolve_completions(ctx)
+        self.assertIn(("SomethingOn", "\"SomethingOn\""), res)
+
+        # 2. Inside string - should NOT have extra quotes
+        cursor = {"function_id": "CreateDisturbance[3]", "arg_index": 0, "is_string": True}
+        ctx = self.create_completion_context(cursor=cursor)
+        res = resolve_completions(ctx)
+        self.assertIn(("SomethingOn", "SomethingOn"), res)
+
+    def test_hover_on_string_hardcoded_enum(self):
+        cursor = {"function_name": "CreateDisturbance", "function_id": "CreateDisturbance[3]", "arg_index": 0}
+        ctx = self.create_hover_context(cursor=cursor)
+        
+        # Should not show hints for strings (only digits)
+        self.assertIsNone(resolve_hover_hint("SomethingOn", ctx))
+        self.assertIsNone(resolve_hover_hint("\"SomethingOn\"", ctx))
 
     def test_completions_deduplication(self):
         buffer_words = ["SetState", "uniqueVar"]

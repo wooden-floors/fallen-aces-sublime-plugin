@@ -55,3 +55,26 @@ def discover_local_functions(view):
         local_functions[name] = args
         
     return local_functions
+
+def discover_buffer_strings(view):
+    """
+    Scans the given Sublime view for all string literals and returns 
+    a sorted list of unique string values (without quotes).
+    """
+    if not view:
+        return []
+
+    # string.quoted.double.fallen-aces is the scope for strings in our syntax
+    string_regions = view.find_by_selector("string.quoted.double.fallen-aces")
+    
+    unique_strings = set()
+    for region in string_regions:
+        text = view.substr(region)
+        # Strip the quotes
+        if (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
+            text = text[1:-1]
+        
+        if text.strip():
+            unique_strings.add(text)
+            
+    return sorted(list(unique_strings))

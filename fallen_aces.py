@@ -84,6 +84,7 @@ def create_completion_context(view, point, prefix):
         shortcuts=definition_provider.provider.get_shortcuts(),
         local_functions=local_function_parser.discover_local_functions(view),
         buffer_words=view.extract_completions(prefix),
+        buffer_strings=local_function_parser.discover_buffer_strings(view),
         variable_to_definition_id=definition_provider.provider.get_variable_to_definition_id(),
         hardcoded_suggestions=definition_provider.provider.get_hardcoded_suggestions()
     )

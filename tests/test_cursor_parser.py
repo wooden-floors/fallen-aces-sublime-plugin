@@ -69,16 +69,28 @@ class TestCursorParser(unittest.TestCase):
 
     def test_parse_cursor_position_basic(self):
         cases = [
-            ("SetState(entityTag, stateName);", 4, "SetState", "SetState[2]", None),
-            ("SetState(entityTag, stateName);", 12, "SetState", "SetState[2]", 0),
-            ("SetState(entityTag, stateName);", 22, "SetState", "SetState[2]", 1),
-            ("EndLevel();", 4, "EndLevel", "EndLevel[0]", None),
+            ("SetState(entityTag, stateName);", 4, "SetState", "SetState[2]", None, False),
+            ("SetState(entityTag, stateName);", 12, "SetState", "SetState[2]", 0, False),
+            ("SetState(entityTag, stateName);", 22, "SetState", "SetState[2]", 1, False),
+            ("EndLevel();", 4, "EndLevel", "EndLevel[0]", None, False),
         ]
-        for line, offset, name, fid, arg in cases:
+        for line, offset, name, fid, arg, is_str in cases:
             res = parse_cursor_position(line, offset)
             self.assertEqual(res["function_name"], name)
             self.assertEqual(res["function_id"], fid)
             self.assertEqual(res["arg_index"], arg)
+            self.assertEqual(res["is_string"], is_str)
+
+    def test_parse_cursor_position_string(self):
+        cases = [
+            ('SetWorldVariable("my_var", 1);', 18, "SetWorldVariable", "SetWorldVariable[2]", 0, True),
+            ('SetWorldVariable("my_var", 1);', 17, "SetWorldVariable", "SetWorldVariable[2]", 0, False), # on the quote itself (start < offset <= end)
+            ('SetWorldVariable("my_var", 1);', 25, "SetWorldVariable", "SetWorldVariable[2]", 0, True),
+            ('SetWorldVariable("my_var", 1);', 26, "SetWorldVariable", "SetWorldVariable[2]", 0, False), # after the quote
+        ]
+        for line, offset, name, fid, arg, is_str in cases:
+            res = parse_cursor_position(line, offset)
+            self.assertEqual(res["is_string"], is_str, "Offset {} in '{}'".format(offset, line))
 
     def test_parse_cursor_position_outside_function(self):
         res = parse_cursor_position("// comment", 5)

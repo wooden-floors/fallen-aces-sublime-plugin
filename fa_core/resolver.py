@@ -24,6 +24,7 @@ CompletionContext = collections.namedtuple("CompletionContext", [
     "shortcuts",        # List of static shortcuts
     "local_functions",  # Dict of functions in current file
     "buffer_words",     # List of words in current view
+    "buffer_strings",   # List of string literals in current view
     "variable_to_definition_id", # Maps arg names to world IDs
     "hardcoded_suggestions" # Dict of hardcoded enum-like values
 ])
@@ -84,7 +85,7 @@ def resolve_hover_hint(word, context):
 
         # Hardcoded Enum resolution
         if arg_name in context.hardcoded_suggestions:
-            hint = context.hardcoded_suggestions[arg_name].get(word)
+            hint = context.hardcoded_suggestions[arg_name]["options"].get(word)
             logger.log("Resolver - return hardcoded hint '{}'".format(hint))
             return hint
 
@@ -134,7 +135,17 @@ def resolve_completions(context):
                 completions = [("{} - {}".format(context.world_data.tags[tid].name, tid), str(tid)) for tid in tags_ids if tid in context.world_data.tags]
 
             elif arg_name in context.hardcoded_suggestions:
-                completions = [(text, value) for value, text in context.hardcoded_suggestions[arg_name].items()]
+                suggestions = context.hardcoded_suggestions[arg_name]
+                is_inside_string = context.cursor.get("is_string", False)
+
+                # Structured format: { "type": "...", "options": { "val": "label" } }
+                is_string_type = suggestions.get("type") == "string"
+                completions = []
+                for value, text in suggestions["options"].items():
+                    if is_string_type and not is_inside_string:
+                        completions.append((text, "\"{}\"".format(value)))
+                    else:
+                        completions.append((text, value))
 
             elif arg_name.lower().endswith("tag") and context.world_data:
                 completions = [("{} - {}".format(t.name, t.number), str(n)) for n, t in context.world_data.tags.items()]
@@ -145,7 +156,12 @@ def resolve_completions(context):
         else:
             logger.log("Resolver - function {} is not predefined".format(function_id))
     
-    # 2. General Global Completion
+    # 2. String Literal Completion (if inside a string)
+    if context.cursor and context.cursor.get("is_string"):
+        logger.log("Resolver - providing string literal suggestions from buffer")
+        return [("{}\tstr".format(s), s) for s in context.buffer_strings]
+
+    # 3. General Global Completion
     logger.log("Resolver - providing general suggestions")
     completions = []
 
