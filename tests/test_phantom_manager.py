@@ -110,7 +110,10 @@ class TestPhantomManager(unittest.TestCase):
             "SetState[2]": {"name": "SetState", "args": ["entityTag", "state"]}
         }
         mock_hardcoded.return_value = {
-            "state": {"1": "Active"}
+            "state": {
+                "type": "int",
+                "options": {"1": "Active"}
+            }
         }
 
         # Setup view content

@@ -178,7 +178,9 @@ class PhantomManager:
         
         # 3. Hardcoded Enum resolution (e.g. notificationType)
         if arg_name in hardcoded_suggestions:
-            return hardcoded_suggestions[arg_name].get(word)
+            suggestions = hardcoded_suggestions[arg_name]
+            # All suggestions are now in structured format: { "type": "...", "options": { ... } }
+            return suggestions["options"].get(word)
 
         return None
 
