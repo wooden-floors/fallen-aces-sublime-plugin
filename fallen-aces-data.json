@@ -484,6 +484,7 @@
     {"trigger": "wht", "contents": "While(Equal(1, 1))\n{\n\t${1:body}\n}", "annotation": "While True"},
     {"trigger": "inc", "contents": "Add(\"&${1}\", 1);", "annotation": "Increment"},
     {"trigger": "dec", "contents": "Subtract(\"&${1}\", 1);", "annotation": "Decrement"},
+    {"trigger": "fn", "contents": "${1:CustomFunction}(${2})\n{\n\t${3:body}\n}", "annotation": "Function Definition"},
     {"trigger": "main", "contents": "Main(${1:args})\n{\n\t${2:body}\n}"}
   ],
   "variable_to_definition_id": {
