@@ -11,6 +11,7 @@ A plugin for Fallen Aces script files. It provides completions and hover hints b
 - **Hover Hints**: Documentation and metadata on hover for:
   - Function signatures, descriptions, and usage examples.
   - Event and Tag resolutions showing their names directly in the tooltip.
+- **Phantom Hints**: Inline visual hints for numeric identifiers (tags and events), showing their names directly in the editor next to the ID.
 - **Snippet Support**: Built-in shortcuts for common code snippets.
 
 ## Installation
@@ -45,12 +46,11 @@ For the plugin to resolve level-specific tags and events:
 3. The plugin will automatically find and parse the `world_file_name` specified in your `chapterInfo.txt` and keep data in sync as you save changes.
 
 ### 2. Syntax Selection
-- Open a script file (`.txt`).
-- Set the syntax to **Fallen Aces Script** (via the status bar or **View > Syntax > Fallen Aces Script**).
+Plugin works only wiht `.txt` files that use **Fallen Aces Script** syntax.
 
-### 3. Automatic Syntax Application
-You can enable automatic syntax detection for `.txt` files located inside `scripts` folders by adding this to your `*.sublime-project` file:
+To select syntax manually open a script file (`.txt`) and set the syntax to **Fallen Aces Script** via the status bar or **View > Syntax > Fallen Aces Script**.
 
+To automatically apply **Fallen Aces Script** syntax to every `.txt` file in Scripts folder, open Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and run **Fallen Aces: Toggle Auto Syntax Application** command. This command will also update your project-level settings (`*.sublime-project`):
 ```json
 {
     "settings": {
@@ -59,8 +59,10 @@ You can enable automatic syntax detection for `.txt` files located inside `scrip
 }
 ```
 
-### 4. Debugging
-If you encounter issues, you can enable debug logging in your `*.sublime-project` file:
+To disable this feature, run the same command again, or change the setting manually in `*sublime-project` file.
+
+### 3. Debugging
+If you encounter issues, you can enable debug logging by using the **Fallen Aces: Toggle Debug Logging** command or by adding this to your `*.sublime-project` file:
 
 ```json
 {
@@ -70,6 +72,13 @@ If you encounter issues, you can enable debug logging in your `*.sublime-project
 }
 ```
 Logs will appear in the Sublime Text console (``Ctrl + ` ``).
+
+### 4. Settings & Commands
+The plugin provides several commands accessible via the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) to toggle project-level settings. These commands automatically update your `*.sublime-project` file:
+
+- **Fallen Aces: Toggle Phantom Hints**: Enable/disable inline visual hints for tags and events.
+- **Fallen Aces: Toggle Auto Syntax Application**: Enable/disable automatic syntax detection for `.txt` files in `scripts` folders.
+- **Fallen Aces: Toggle Debug Logging**: Enable/disable debug logging in the Sublime Text console.
 
 ## Requirements
 - **Sublime Text** ([https://www.sublimetext.com/](https://www.sublimetext.com/))
