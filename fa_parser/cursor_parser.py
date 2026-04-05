@@ -59,6 +59,69 @@ def tokenize(line):
         i += 1
     return tokens
 
+def find_calls(tokens):
+    """
+    Identifies all function call candidates (word followed by '(') 
+    and their matching ')' boundaries.
+    """
+    candidates = []
+    for idx, token in enumerate(tokens):
+        if token.type == "word" and idx + 1 < len(tokens) and tokens[idx+1].type == "(":
+            name = token.value
+            
+            # Find matching ')' by tracking the nesting stack
+            stack = 1
+            end_idx = -1
+            for j in range(idx + 2, len(tokens)):
+                t = tokens[j]
+                if t.type == "(":
+                    stack += 1
+                elif t.type == ")":
+                    stack -= 1
+                    if stack == 0:
+                        end_idx = j
+                        break
+                elif t.type == "comment":
+                    break
+            
+            if end_idx != -1:
+                candidates.append({
+                    "name": name,
+                    "start": token.start,
+                    "end": tokens[end_idx].end,
+                    "args_start": tokens[idx+1].end,
+                    "body_idx": idx + 2, 
+                    "end_idx": end_idx
+                })
+    return candidates
+
+def split_arguments(tokens):
+    """
+    Splits a list of tokens by commas, respecting nested parentheses.
+    Returns a list of token lists.
+    """
+    all_args = []
+    current_arg = []
+    stack = 0
+    for t in tokens:
+        if t.type == "(":
+            stack += 1
+            current_arg.append(t)
+        elif t.type == ")":
+            stack -= 1
+            current_arg.append(t)
+        elif t.type == "," and stack == 0:
+            all_args.append(current_arg)
+            current_arg = []
+        else:
+            current_arg.append(t)
+    
+    if not all_args and not current_arg:
+        return []
+        
+    all_args.append(current_arg)
+    return all_args
+
 def parse_cursor_position(line, cursor_offset):
     """
     Identifies which function call the cursor is inside and which argument index 
@@ -68,37 +131,8 @@ def parse_cursor_position(line, cursor_offset):
 
     tokens = tokenize(line)
     
-    # 1. Identify all valid function call candidates (word followed by '(')
-    candidates = []
-    for idx, token in enumerate(tokens):
-        if token.type == "word" and idx + 1 < len(tokens) and tokens[idx+1].type == "(":
-            name = token.value
-            start = token.start
-            args_start = tokens[idx+1].end
-            
-            # Find matching ')' by tracking the nesting stack
-            stack = 1
-            end = -1
-            for j in range(idx + 2, len(tokens)):
-                t = tokens[j]
-                if t.type == "(":
-                    stack += 1
-                elif t.type == ")":
-                    stack -= 1
-                    if stack == 0:
-                        end = t.start
-                        break
-                elif t.type == "comment":
-                    break
-            
-            if end != -1:
-                candidates.append({
-                    "name": name,
-                    "start": start,
-                    "args_start": args_start,
-                    "end": end,
-                    "body_idx": idx + 2 # Where arguments begin
-                })
+    # 1. Identify all valid function call candidates
+    candidates = find_calls(tokens)
 
     # 2. Find the innermost function containing the cursor
     active = None
@@ -121,11 +155,8 @@ def parse_cursor_position(line, cursor_offset):
     # The cursor is "on the name" if it is before the opening '('
     is_on_name = cursor_offset < active["args_start"]
     
-    for j in range(active["body_idx"], len(tokens)):
+    for j in range(active["body_idx"], active["end_idx"]):
         t = tokens[j]
-        # Stop at the end of the active function
-        if t.start >= active["end"]:
-            break
             
         if not found_cursor and t.start >= cursor_offset:
             found_cursor = True
@@ -138,7 +169,7 @@ def parse_cursor_position(line, cursor_offset):
             total_args += 1
             if not found_cursor:
                 arg_index += 1
-        elif stack == 0 and t.type != "comment":
+        elif stack == 0:
             # Any non-punctuation token at top level means we have at least one arg
             has_content = True
             
@@ -150,6 +181,8 @@ def parse_cursor_position(line, cursor_offset):
         "function_name": active["name"],
         "arg_index": None if is_on_name else arg_index,
     }
+
     
     logger.log("parse_cursor_position - result={}".format(result))
     return result
+

@@ -11,6 +11,7 @@ try:
     from .fa_core import definition_provider
     from .fa_core import world_data_provider
     from .fa_core import resolver
+    from .fa_core import phantom_manager
 except (ImportError, ValueError):
     from fa_utils import logger
     from fa_utils.formatter import format_hint_html
@@ -20,6 +21,7 @@ except (ImportError, ValueError):
     from fa_core import definition_provider
     from fa_core import world_data_provider
     from fa_core import resolver
+    from fa_core import phantom_manager
 
 # Dynamically detect our package name (handles renames and zipped packages)
 PACKAGE_NAME = os.path.basename(os.path.dirname(__file__)).replace(".sublime-package", "")
@@ -115,6 +117,61 @@ def get_world_data(view):
 
 
 # ---------------------------------------------------------------------------
+# Commands
+# ---------------------------------------------------------------------------
+
+def _toggle_project_setting(window, setting_key, label):
+    """
+    Helper to toggle a boolean setting in the current .sublime-project file.
+    """
+    project_data = window.project_data()
+    if project_data is None:
+        sublime.error_message("Fallen Aces: No project open. Project settings are required to toggle '{}'.".format(setting_key))
+        return None
+
+    settings = project_data.get("settings", {})
+    current = settings.get(setting_key, False)
+    new_state = not current
+    settings[setting_key] = new_state
+    project_data["settings"] = settings
+    window.set_project_data(project_data)
+
+    status = "Enabled" if new_state else "Disabled"
+    sublime.status_message("Fallen Aces {}: {}".format(label, status))
+    return new_state
+
+
+class FallenAcesTogglePhantomsCommand(sublime_plugin.TextCommand):
+    """
+    Command to toggle inline phantom hints for tags and events.
+    """
+    def run(self, edit):
+        enabled = phantom_manager.manager.toggle(self.view)
+        sublime.status_message("Fallen Aces Phantoms: {}".format("Enabled" if enabled else "Disabled"))
+
+    def is_visible(self):
+        return self.view.match_selector(0, "source.fallen-aces")
+
+
+class FallenAcesToggleAutoSyntaxCommand(sublime_plugin.WindowCommand):
+    """
+    Command to toggle automatic syntax application for .txt files in 'scripts' folders.
+    """
+    def run(self):
+        _toggle_project_setting(self.window, "fallen_aces_auto_syntax_enabled", "Auto Syntax")
+
+
+class FallenAcesToggleDebugLoggingCommand(sublime_plugin.WindowCommand):
+    """
+    Command to toggle debug logging for the plugin.
+    """
+    def run(self):
+        new_state = _toggle_project_setting(self.window, "fallen_aces_plugin_debug_enabled", "Debug Logging")
+        if new_state is not None:
+            logger.set_enabled(new_state)
+
+
+# ---------------------------------------------------------------------------
 # Event Listener
 # ---------------------------------------------------------------------------
 
@@ -152,9 +209,21 @@ class FallenAcesScriptEventListener(sublime_plugin.EventListener):
 
     def on_load(self, view):
         self._check_and_apply_syntax(view)
+        if self._should_apply(view):
+            phantom_manager.manager.refresh(view)
 
     def on_post_save(self, view):
         self._check_and_apply_syntax(view)
+        if self._should_apply(view):
+            phantom_manager.manager.refresh(view)
+
+    def on_activated(self, view):
+        if self._should_apply(view):
+            phantom_manager.manager.refresh(view)
+
+    def on_modified_async(self, view):
+        if self._should_apply(view):
+            phantom_manager.manager.refresh_debounced(view)
 
     def on_hover(self, view, point, zone):
         """

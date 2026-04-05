@@ -1,0 +1,14 @@
+[
+    {
+        "caption": "Fallen Aces: Toggle Phantom Hints",
+        "command": "fallen_aces_toggle_phantoms"
+    },
+    {
+        "caption": "Fallen Aces: Toggle Auto Syntax Application",
+        "command": "fallen_aces_toggle_auto_syntax"
+    },
+    {
+        "caption": "Fallen Aces: Toggle Debug Logging",
+        "command": "fallen_aces_toggle_debug_logging"
+    }
+]
