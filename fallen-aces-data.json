@@ -594,7 +594,11 @@
     },
     {
       "name": "RunConsoleCommand",
-      "variants": [{"args": ["consoleCommand"]}]
+      "variants": [{
+        "args": ["consoleCommand"],
+        "description": "Runs specified console command.",
+        "usage": "RunConsoleCommand(\"healme 20\")"
+      }]
     },
     {
       "name": "SetBlackboardBoolean",
@@ -754,7 +758,10 @@
       "type": "int",
       "options": {
         "0": "Standard",
-        "1": "Error"
+        "1": "Invalid action",
+        "2": "Positive effect",
+        "3": "Negative effect",
+        "4": "Gained loot effect",
       }
     },
     "disturbanceTypeName": {
