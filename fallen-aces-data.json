@@ -26,7 +26,7 @@
     },
     {
       "name": "GetProfileFlag",
-      "variants": [{"args": ["flagName", "outputVar"]}]
+      "variants": [{"args": ["flagName", "outputVariable"]}]
     },
     {
       "name": "SetHitpoints",
@@ -142,10 +142,6 @@
       "variants": [{"args": ["objectiveName"]}]
     },
     {
-      "name": "FindSecret",
-      "variants": [{"args": []}]
-    },
-    {
       "name": "EndLevel",
       "variants": [{"args": []}]
     },
@@ -221,7 +217,10 @@
     },
     {
       "name": "PlayMovie",
-      "variants": [{"args": ["movieName"]}]
+      "variants": [
+        {"args": ["fileName"]},
+        {"args": ["fileName", "openScreenAfter"]}
+      ]
     },
     {
       "name": "OpenScreen",
@@ -334,7 +333,10 @@
     },
     {
       "name": "Wait",
-      "variants": [{"args": ["seconds"]}]
+      "variants": [
+        {"args": ["timeToWait"]},
+        {"args": ["timeToWait", "skippable"]}
+      ]
     },
     {
       "name": "While",
@@ -471,6 +473,233 @@
       "name": "ScriptIsLocked",
       "tags": ["predicate"],
       "variants": [{"args": []}]
+    },
+    {
+      "name": "TrySpawnPassenger",
+      "variants": [{"args": ["objectTag"]}]
+    },
+    {
+      "name": "HurtTaggedEntity",
+      "variants": [{"args": ["entityTag", "damageAmount"]}]
+    },
+    {
+      "name": "PreloadExternalAudio",
+      "variants": [{"args": ["path"]}]
+    },
+    {
+      "name": "SetTaggedEntityAmmo",
+      "variants": [{"args": ["entityTag", "ammoAmount"]}]
+    },
+    {
+      "name": "SkipPromptBegone",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "SetFactionTargetWanted",
+      "variants": [
+        {"args": ["factionId"]},
+        {"args": ["factionId", "isWanted"]}
+      ]
+    },
+    {
+      "name": "SetParent",
+      "variants": [{"args": ["entityTag", "parentEntityTag"]}]
+    },
+    {
+      "name": "EnemiesAreAround",
+      "tags": ["predicate"],
+      "variants": [{"args": ["entityRepresentingPositionTag", "radius"]}]
+    },
+    {
+      "name": "HasItem",
+      "tags": ["predicate"],
+      "variants": [{"args": ["entityTag", "itemId"]}]
+    },
+    {
+      "name": "HasGadget",
+      "tags": ["predicate"],
+      "variants": [{"args": ["gadgetName"]}]
+    },
+    {
+      "name": "AddPlayerAccessory",
+      "variants": [{"args": ["accessoryId"]}]
+    },
+    {
+      "name": "VariableExists",
+      "tags": ["predicate"],
+      "variants": [{"args": ["variableName"]}]
+    },
+    {
+      "name": "SetTalkPromptText",
+      "variants": [{"args": ["enemyTag", "text"]}]
+    },
+    {
+      "name": "GetHighestSubObjectiveStep",
+      "variants": [{"args": ["objectiveName", "outputVariable"]}]
+    },
+    {
+      "name": "HasMoney",
+      "tags": ["predicate"],
+      "variants": [{"args": ["amount"]}]
+    },
+    {
+      "name": "RemoveTaggedItemFromInventory",
+      "variants": [{"args": ["entityTag", "itemTag"]}]
+    },
+    {
+      "name": "MarkAsFollowerTeleportLocation",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "OpenLevelSelect",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "MarkAsCopSpawnLocation",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "SetTaggedEntityHealth",
+      "variants": [{"args": ["entityTag", "healthAmount"]}]
+    },
+    {
+      "name": "ObjectiveCompleted",
+      "tags": ["predicate"],
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "DisableAllNPCs",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "GetNextChapterInStory",
+      "variants": [{"args": ["outputVariable"]}]
+    },
+    {
+      "name": "SetFactionRelation",
+      "variants": [{"args": ["factionId1", "factionId2", "factionRelationType"]}]
+    },
+    {
+      "name": "GiveMoney",
+      "variants": [{"args": ["amount"]}]
+    },
+    {
+      "name": "ChapterCompleted",
+      "tags": ["predicate"],
+      "variants": [{"args": ["episodeName", "chapterOrder"]}]
+    },
+    {
+      "name": "SetIgnoredFlag",
+      "variants": [{"args": ["entityTag", "isIgnored"]}]
+    },
+    {
+      "name": "RunConsoleCommand",
+      "variants": [{"args": ["consoleCommand"]}]
+    },
+    {
+      "name": "SetBlackboardBoolean",
+      "variants": [{"args": ["entityTag", "booleanName", "booleanValue"]}]
+    },
+    {
+      "name": "HealTaggedEntity",
+      "variants": [{"args": ["entityTag", "healAmount"]}]
+    },
+    {
+      "name": "GetMoney",
+      "variants": [{"args": ["outputVariable"]}]
+    },
+    {
+      "name": "SetRestrictedAreaPermission",
+      "variants": [{"args": ["entityTag", "factionId", "newClearanceLevel"]}]
+    },
+    {
+      "name": "SetFactionColor",
+      "variants": [{"args": ["factionId", "factionColorName"]}]
+    },
+    {
+      "name": "SpendMoney",
+      "variants": [{"args": ["amount"]}]
+    },
+    {
+      "name": "RemoveGadget",
+      "variants": [{"args": ["gadgetName"]}]
+    },
+    {
+      "name": "AutoSave",
+      "variants": [{"args": []}]
+    },
+    {
+      "name": "SetTalkPromptVisibility",
+      "variants": [{"args": ["entityTag", "isTalkable"]}]
+    },
+    {
+      "name": "MarkAsPhoneboothLocation",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "TriggerFollowCommand",
+      "variants": [
+        {"args": ["entityTag", "follow"]},
+        {"args": ["entityTag", "follow", "silent"]}
+      ]
+    },
+    {
+      "name": "MarkAsSubObjective",
+      "variants": [{"args": ["subObjectiveName", "mainObjectiveName", "step"]}]
+    },
+    {
+      "name": "SetFollowAndWaitPromptVisibility",
+      "variants": [{"args": ["entityTag", "state"]}]
+    },
+    {
+      "name": "ObjectiveExists",
+      "tags": ["predicate"],
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "UndoDespawn",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "RandomRange",
+      "variants": [{"args": ["outputVariable", "min", "max"]}]
+    },
+    {
+      "name": "SetObjectiveCount",
+      "variants": [{"args": ["objectiveName", "count"]}]
+    },
+    {
+      "name": "ApplyStatusEffect",
+      "variants": [{"args": ["entityTag", "statusEffectType"]}]
+    },
+    {
+      "name": "CancelObjective",
+      "variants": [{"args": ["objectiveName"]}]
+    },
+    {
+      "name": "MarkAsWhitmanHideLocation",
+      "variants": [{"args": ["entityTag"]}]
+    },
+    {
+      "name": "SetFactionName",
+      "variants": [{"args": ["factionId", "factionName"]}]
+    },
+    {
+      "name": "SetCopDispatchEnabledState",
+      "variants": [{"args": ["isEnabled"]}]
+    },
+    {
+      "name": "RemovePlayerAccessory",
+      "variants": [{"args": ["accessoryId"]}]
+    },
+    {
+      "name": "SpeakerIsNearbyAndReady",
+      "tags": ["predicate"],
+      "variants": [{"args": ["speakerTag", "positionToCheckFromTag", "maxDistance"]}]
+    },
+    {
+      "name": "SetHudVisibility",
+      "variants": [{"args": []}]
     }
   ],
   "shortcuts": [
@@ -550,6 +779,48 @@
         "0": "Info",
         "1": "Warning",
         "2": "Error"
+      }
+    },
+    "factionRelationType": {
+      "type": "int",
+      "options": {
+        "0": "Neutral",
+        "1": "Hostile",
+        "2": "Friendly"
+      }
+    },
+    "factionColorName": {
+      "type": "string",
+      "options": {
+        "blue": "blue",
+        "cyan": "cyan",
+        "purple": "purple",
+        "magenta": "magenta",
+        "green": "green",
+        "red": "red",
+        "yellow": "yellow",
+        "gray": "gray",
+        "white": "white"
+      }
+    },
+    "statusEffectType": {
+      "type": "int",
+      "options": {
+        "0": "HealthRegen",
+        "1": "StaminaRegen",
+        "2": "CureExhaustion",
+        "3": "AimBoost",
+        "4": "ToughnessRegen",
+        "5": "Drunk",
+        "6": "Bleed",
+        "7": "InstantHeal",
+        "8": "Damage",
+        "9": "InstantArmor",
+        "10": "FireDamage",
+        "11": "ShockDamage",
+        "12": "BoltTonic",
+        "13": "RagingBullTonic",
+        "14": "ToxicDamage"
       }
     }
   }
